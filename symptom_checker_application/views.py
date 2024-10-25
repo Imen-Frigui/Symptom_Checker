@@ -14,3 +14,6 @@ def contact(request):
 def blog(request):
     return render(request, 'front_office/blog.html')
 
+def dashboard(request):
+    return render(request, 'back_office/pages/dashboard.html')
+
