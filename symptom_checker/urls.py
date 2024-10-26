@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from symptom_checker_application import views
+from django.urls import path, include  # Import 'include' for including app URLs
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,7 +25,11 @@ urlpatterns = [
     path('about/', views.about, name='about'),	
     path('contact/', views.contact, name='contact'),
     path('blog/', views.blog, name='blog'),
+
     path('dashboard/', views.dashboard, name='dashboard'),
+
+
+     path('institution/', include('Institution.urls')),  
 
 ]
 #testpython
