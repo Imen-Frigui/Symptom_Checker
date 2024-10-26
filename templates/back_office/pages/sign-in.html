@@ -108,6 +108,11 @@
                   
                 </div>
                 <div class="card-footer text-center pt-0 px-lg-2 px-1">
+                  <h2>Login with Facial Recognition</h2>
+                    <form method="POST" action="{% url 'facial_login' %}">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-primary">Login with Face</button>
+                    </form>
                   <p class="mb-4 text-sm mx-auto">
                     Don't have an account?
                     <a href="{% url 'signup' %}" class="text-primary text-gradient font-weight-bold">Sign up</a>
@@ -146,6 +151,21 @@
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="{% static 'back_office/assets/js/argon-dashboard.min.js' %}?v=2.1.0"></script>
+  <script>
+    document.querySelector('form').addEventListener('submit', function(event) {
+        navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function(stream) {
+            // The user allowed camera access
+            console.log("Camera access granted");
+        })
+        .catch(function(error) {
+            // The user denied camera access
+            console.error("Camera access denied", error);
+            event.preventDefault(); // Stop the form submission
+        });
+    });
+    </script>
+    
 </body>
 
 </html>

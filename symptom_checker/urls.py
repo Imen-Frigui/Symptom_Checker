@@ -44,4 +44,8 @@ urlpatterns = [
     path('profile/generate-image/', user_views.generate_image_view, name='generate_image'),
     path('profile/keep-image/<str:image_name>/', user_views.keep_img, name='keep_image'),
     
+    # Facial recognition routes
+    path('register/', user_views.capture_and_encode_face, name='register'),
+    path('login/', user_views.facial_login, name='facial_login'),
+
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
