@@ -19,6 +19,8 @@ from django.urls import path
 from symptom_checker_application import views
 from django.contrib.auth import views as auth_views
 from users import views as user_views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -37,4 +39,9 @@ urlpatterns = [
     path('profile/', user_views.profile, name='profile'),
     path('profile/update/', user_views.update_profile, name='update_profile'),
     path('profile/change-password/', user_views.change_password, name='change_password'), 
-]
+
+    #User Ai
+    path('profile/generate-image/', user_views.generate_image_view, name='generate_image'),
+    path('profile/keep-image/<str:image_name>/', user_views.keep_img, name='keep_image'),
+    
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

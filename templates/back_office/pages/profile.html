@@ -19,8 +19,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="{% static 'back_office/assets/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="{% static 'back_office/assets/img/favicon.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="{% static 'back_office/assets/img/apple-icon.png' %}">
+  <link rel="icon" type="image/png" href="{% static 'back_office/assets/img/favicon.png' %}">
   <title>
     Argon Dashboard 3 by Creative Tim
   </title>
@@ -188,7 +188,7 @@
                   <a class="dropdown-item border-radius-md" href="javascript:;">
                     <div class="d-flex py-1">
                       <div class="my-auto">
-                        <img src="{% static 'back_office/assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm bg-gradient-dark me-3">
+                        <img src="{% static 'back_office/assets/img/small-logos/logo-spotify.svg' %}" class="avatar avatar-sm bg-gradient-dark me-3">
                       </div>
                       <div class="d-flex flex-column justify-content-center">
                         <h6 class="text-sm font-weight-normal mb-1">
@@ -244,7 +244,7 @@
         <div class="row gx-4">
           <div class="col-auto">
             <div class="avatar avatar-xl position-relative">
-              <img src="{% static 'back_office/assets/img/team-1.jpg' %}" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
+              <img src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}{% static 'back_office/assets/img/team-1.jpg' %}{% endif %}" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
             </div>
           </div>
           <div class="col-auto my-auto">
@@ -343,32 +343,51 @@
                         <div class="col-4 col-lg-4 order-lg-2">
                           <div class="mt-n4 mt-lg-n6 mb-4 mb-lg-0">
                             <a href="javascript:;">
-                              <img src="{% static 'back_office/assets/img/team-2.jpg' %}" class="rounded-circle img-fluid border border-2 border-white">
+                              <img src="{% if generated_image_url %}{{ generated_image_url }}{% elif user.profile_picture %}{{ user.profile_picture.url }}{% else %}{% static 'back_office/assets/img/team-2.jpg' %}{% endif %}" class="rounded-circle img-fluid border border-2 border-white" id="profile-picture">
                             </a>
                           </div>
                         </div>
                       </div>
                       <div class="card-header text-center border-0 pt-0 pt-lg-2 pb-4 pb-lg-3">
-                        <div class="d-flex justify-content-between">
-                          <a href="javascript:;" class="btn btn-sm btn-info mb-0 d-none d-lg-block">Connect</a>
-                          <a href="javascript:;" class="btn btn-sm btn-dark float-right mb-0 d-none d-lg-block">Message</a>
-                        </div>
                       </div>
                       <div class="card-body pt-0">
                         <div class="text-center mt-4">
-                          <h5>
-                            {{ user.first_name }} {{ user.last_name }}<span class="font-weight-light">, 22</span>
-                          </h5>
-                          <div class="h6 font-weight-300">
-                            <i class="ni location_pin mr-2"></i>Bucharest, Romania
-                          </div>
-                          <div class="h6 mt-4">
-                            <i class="ni business_briefcase-24 mr-2"></i>Solution Manager - Creative Tim Officer
-                          </div>
-                          <div>
-                            <i class="ni education_hat mr-2"></i>University of Computer Science
-                          </div>
-                        </div>
+                          <h5 class="card-title">Easily generate a profile picture using AI</h5>
+                          <!-- Generate Image from Description Section -->
+                          <form method="POST" action="{% url 'generate_image' %}">
+                              {% csrf_token %}
+                              {{ image_generation_form.description }}  <!-- Form input for image generation -->
+                              <button type="submit" name="generate_image" class="btn btn-primary mt-3">Generate Image</button>
+                          </form>
+                          <!-- Display all images stored in the static/public/img folder -->
+{% if all_image_urls %}
+<h6 class="mt-4">All Generated Images</h6>
+<div class="row">
+    {% for image_url in all_image_urls %}
+        <div class="col-md-4">
+            <img src="{{ image_url }}" alt="Generated Image" class="img-fluid mb-3"/>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Display the generated images from session -->
+{% if generated_images %}
+<h6 class="mt-4">Select a Generated Profile Picture to Keep</h6>
+<div class="row">
+    {% for image in generated_images %}
+        <div class="col-md-4">
+            <img src="{{ image.url }}" alt="Generated Image" class="img-fluid mb-3"/>
+            <form method="POST" action="{% url 'keep_image' image.name %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-dark mt-2">Keep Image</button>
+            </form>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+                        </div> 
                       </div>
                     </div>
                   </div>
@@ -414,31 +433,38 @@
                         <div class="col-4 col-lg-4 order-lg-2">
                           <div class="mt-n4 mt-lg-n6 mb-4 mb-lg-0">
                             <a href="javascript:;">
-                              <img src="{% static 'back_office/assets/img/team-2.jpg' %}" class="rounded-circle img-fluid border border-2 border-white">
+                              <img src="{% if generated_image_url %}{{ generated_image_url }}{% elif user.profile_picture %}{{ user.profile_picture.url }}{% else %}{% static 'back_office/assets/img/team-2.jpg' %}{% endif %}" class="rounded-circle img-fluid border border-2 border-white" id="profile-picture">
                             </a>
                           </div>
                         </div>
                       </div>
                       <div class="card-header text-center border-0 pt-0 pt-lg-2 pb-4 pb-lg-3">
                         <div class="d-flex justify-content-between">
-                          <a href="javascript:;" class="btn btn-sm btn-info mb-0 d-none d-lg-block">Connect</a>
-                          <a href="javascript:;" class="btn btn-sm btn-dark float-right mb-0 d-none d-lg-block">Message</a>
+                          <div class="d-flex justify-content-between">
+                                <!-- {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-dark float-right mb-0 d-none d-lg-block">Keep</button>
+                            </form> -->
+                          </div>                        
                         </div>
                       </div>
                       <div class="card-body pt-0">
                         <div class="text-center mt-4">
                           <h5>
-                            {{ user.first_name }} {{ user.last_name }}<span class="font-weight-light">, 22</span>
+                            {{ user.first_name }} {{ user.last_name }}
                           </h5>
-                          <div class="h6 font-weight-300">
-                            <i class="ni location_pin mr-2"></i>Bucharest, Romania
-                          </div>
-                          <div class="h6 mt-4">
-                            <i class="ni business_briefcase-24 mr-2"></i>Solution Manager - Creative Tim Officer
-                          </div>
-                          <div>
-                            <i class="ni education_hat mr-2"></i>University of Computer Science
-                          </div>
+                          <!-- Generate Image from Description Section -->
+                          <h5>Generate Image from Description</h5>
+                          <!-- <form method="POST" action="{% url 'generate_image' %}">
+                              {% csrf_token %}
+                              {{ image_generation_form.description }}   Form input for image generation
+                              <button type="submit" name="generate_image" class="btn btn-primary">Generate Image</button>
+                          </form>
+
+                          Display the generated image if available
+                          {% if generated_image_url %}
+                              <h5>Generated Image</h5>
+                              <img src="{{ generated_image_url }}" alt="Generated Image" class="img-fluid" id="generated-image-preview"/>
+                          {% endif %} -->
                         </div>
                       </div>
                     </div>

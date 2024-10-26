@@ -14,6 +14,7 @@ class CustomUser(AbstractUser):
     address = models.TextField(blank=True)
     phone = models.CharField(max_length=15, blank=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='simple')
+    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
 
     # We can customize or override methods if necessary
 

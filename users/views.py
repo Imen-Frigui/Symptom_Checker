@@ -7,6 +7,16 @@ from django.contrib.auth.decorators import login_required
 from .forms import ProfileForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
+from django.http import HttpResponse
+from .huggingface_service import generate_image
+import io
+from users.forms import ImageGenerationForm
+import os
+from django.conf import settings
+import time
+import uuid
+from os.path import basename
+import shutil
 
 logger = logging.getLogger(__name__)
 
@@ -43,26 +53,14 @@ def signup(request):
 def profile(request):
     profile_form = ProfileForm(instance=request.user)
     password_form = PasswordChangeForm(request.user)
-
-    if request.method == 'POST':
-        if 'update_profile' in request.POST:
-            profile_form = ProfileForm(request.POST, instance=request.user)
-            if profile_form.is_valid():
-                profile_form.save()
-                messages.success(request, 'Your profile has been updated successfully!')
-                return redirect('profile')
-
-        elif 'change_password' in request.POST:
-            password_form = PasswordChangeForm(request.user, request.POST)
-            if password_form.is_valid():
-                user = password_form.save()
-                update_session_auth_hash(request, user)
-                messages.success(request, 'Your password was updated successfully!')
-                return redirect('profile')
+    image_generation_form = ImageGenerationForm()
+    generated_image_url = None
 
     return render(request, 'back_office/pages/profile.html', {
         'profile_form': profile_form,
         'password_form': password_form,
+        'image_generation_form': image_generation_form,
+        'generated_image_url': generated_image_url,
     })
 
 
@@ -91,4 +89,270 @@ def change_password(request):
     else:
         password_form = PasswordChangeForm(request.user)
 
-    return render(request, 'back_office/pages/change_password.html', {'password_form': password_form})
+    return render(request, 'back_office/pages/profile.html', {'password_form': password_form})
+
+# @login_required
+# def generate_image_view(request):
+#     image_generation_form = ImageGenerationForm()
+#     # generated_image_url = None
+#     generated_images = []
+
+#     if request.method == 'POST':
+#         description = request.POST.get('description')
+#         image_generation_form = ImageGenerationForm(request.POST)
+#         if description and image_generation_form.is_valid():
+#             try:
+#                 # Call the Hugging Face API to generate the image
+#                 image_data = generate_image(description)
+
+#                 # Define the directory and image path to save the image
+#                 img_directory = os.path.join(settings.BASE_DIR, 'static', 'public', 'img')
+#                 os.makedirs(img_directory, exist_ok=True)  # Ensure the directory exists
+#                 # img_path = os.path.join(img_directory, f"{request.user.username}_generated_image.png")
+#                 # Create a unique filename using UUID
+#                 timestamp = int(time.time()) 
+#                 img_path = os.path.join(img_directory, f"{request.user.username}_generated_image_{timestamp}.png")
+                
+#                 # Save the image
+#                 with open(img_path, 'wb') as img_file:
+#                     img_file.write(image_data)
+
+#                 # Pass the image URL to the template
+#                 generated_images.append({
+#                     'url': f'/static/public/img/{basename(img_path)}',
+#                     'name': basename(img_path)
+#                 })
+#                 # Save the images in session to access them later
+#                 if 'generated_images' not in request.session:
+#                     request.session['generated_images'] = []
+#                 request.session['generated_images'].append({
+#                     'url': f'/static/public/img/{basename(img_path)}',
+#                     'name': basename(img_path)
+#                 })
+#                 request.session.modified = True
+#                 # generated_image_url = f'/static/public/img/{request.user.username}_generated_image.png'
+#                 messages.success(request, 'Image generated and saved successfully!')
+#             except Exception as e:
+#                 messages.error(request, f"Error generating image: {e}")
+#     session_images = request.session.get('generated_images', [])
+#     # Render the profile page with the image generation form and image
+#     return render(request, 'back_office/pages/profile.html', {
+#         'image_generation_form': image_generation_form,
+#         # 'generated_image_url': generated_image_url,
+#         'generated_images': session_images,
+#         'profile_form': ProfileForm(instance=request.user),  # Pass the profile form
+#         'password_form': PasswordChangeForm(request.user),  # Pass the password form
+#     })
+
+import os
+from os.path import isfile, join
+# tru
+# @login_required
+# def generate_image_view(request):
+#     image_generation_form = ImageGenerationForm()
+#     generated_images = []
+
+#     img_directory = os.path.join(settings.BASE_DIR, 'static', 'public', 'img')
+#     os.makedirs(img_directory, exist_ok=True)  # Ensure the directory exists
+
+#     # Generate a new image if the form is submitted
+#     if request.method == 'POST':
+#         description = request.POST.get('description')
+#         image_generation_form = ImageGenerationForm(request.POST)
+#         if description and image_generation_form.is_valid():
+#             try:
+#                 # Call the Hugging Face API to generate the image
+#                 image_data = generate_image(description)
+
+#                 # Define the directory and image path to save the image
+#                 timestamp = int(time.time())
+#                 img_path = os.path.join(img_directory, f"{request.user.username}_generated_image_{timestamp}.png")
+                
+#                 # Save the image
+#                 with open(img_path, 'wb') as img_file:
+#                     img_file.write(image_data)
+
+#                 # Store the image data in the session
+#                 image_info = {
+#                     'url': f'/static/public/img/{os.path.basename(img_path)}',
+#                     'name': os.path.basename(img_path)
+#                 }
+#                 generated_images.append(image_info)
+                
+#                 # Ensure 'generated_images' exists in session
+#                 if 'generated_images' not in request.session:
+#                     request.session['generated_images'] = []
+
+#                 # Add the new image to session
+#                 request.session['generated_images'].append(image_info)
+#                 request.session.modified = True
+
+#                 messages.success(request, 'Image generated and saved successfully!')
+#             except Exception as e:
+#                 messages.error(request, f"Error generating image: {e}")
+
+#     # Retrieve previously generated images from session
+#     session_images = request.session.get('generated_images', [])
+
+#     # Retrieve all images from the static/public/img directory
+#     all_images = [f for f in os.listdir(img_directory) if isfile(join(img_directory, f))]
+    
+#     # Convert image filenames to URLs for display
+#     all_image_urls = [f'/static/public/img/{img}' for img in all_images]
+
+#     return render(request, 'back_office/pages/profile.html', {
+#         'image_generation_form': image_generation_form,
+#         'generated_images': session_images,  # Images from the session
+#         'all_image_urls': all_image_urls,  # All images in the static/public/img folder
+#         'profile_form': ProfileForm(instance=request.user),  # Pass the profile form
+#         'password_form': PasswordChangeForm(request.user),  # Pass the password form
+#     })
+import logging
+from os.path import join, isfile
+
+logger = logging.getLogger(__name__)
+
+@login_required
+def generate_image_view(request):
+    image_generation_form = ImageGenerationForm()
+    generated_images = []
+
+    # Define the directory where the images should be saved
+    img_directory = os.path.join(settings.BASE_DIR, 'static', 'public', 'img')
+    os.makedirs(img_directory, exist_ok=True)  # Ensure the directory exists
+
+    # Generate a new image if the form is submitted
+    if request.method == 'POST':
+        description = request.POST.get('description')
+        image_generation_form = ImageGenerationForm(request.POST)
+        if description and image_generation_form.is_valid():
+            try:
+                # Call the Hugging Face API to generate the image
+                image_data = generate_image(description)
+
+                # Define the image path with a timestamp to make it unique
+                timestamp = int(time.time())
+                img_path = os.path.join(img_directory, f"{request.user.username}_generated_image_{timestamp}.png")
+                
+                # Save the image
+                with open(img_path, 'wb') as img_file:
+                    img_file.write(image_data)
+
+                # Store the image data in the session for future access
+                image_info = {
+                    'url': f'/static/public/img/{os.path.basename(img_path)}',
+                    'name': os.path.basename(img_path)
+                }
+                generated_images.append(image_info)
+
+                # Ensure 'generated_images' exists in session
+                if 'generated_images' not in request.session:
+                    request.session['generated_images'] = []
+
+                # Add the new image to session
+                request.session['generated_images'].append(image_info)
+                request.session.modified = True
+
+                messages.success(request, 'Image generated and saved successfully!')
+            except Exception as e:
+                messages.error(request, f"Error generating image: {e}")
+
+    # Retrieve previously generated images from session
+    session_images = request.session.get('generated_images', [])
+
+    # Retrieve all images from the static/public/img directory
+    try:
+        all_images = [f for f in os.listdir(img_directory) if os.path.isfile(os.path.join(img_directory, f))]
+    except Exception as e:
+        all_images = []
+        messages.error(request, f"Error retrieving images from directory: {e}")
+
+    # Convert image filenames to URLs for display
+    all_image_urls = [f'/static/public/img/{img}' for img in all_images]
+
+    # Render the profile page with all necessary context
+    return render(request, 'back_office/pages/profile.html', {
+        'image_generation_form': image_generation_form,
+        'generated_images': session_images,  # Images from the session
+        'all_image_urls': all_image_urls,  # All images in the static/public/img folder
+        'profile_form': ProfileForm(instance=request.user),  # Pass the profile form
+        'password_form': PasswordChangeForm(request.user),  # Pass the password form
+    })
+
+
+
+# @login_required
+# def keep_img(request):
+#     """ Save the generated image as the profile picture for the user """
+#     img_directory = os.path.join(settings.MEDIA_ROOT, 'profile_pictures')
+#     os.makedirs(img_directory, exist_ok=True)
+
+#     img_source_path = os.path.join(settings.BASE_DIR, 'static', 'public', 'img', f"{request.user.username}_generated_image.png")
+#     img_destination_path = os.path.join(img_directory, f"{request.user.username}_profile_picture_{timestamp}.png")
+
+#     if os.path.exists(img_source_path):
+#         # Move the image from static to the media directory
+#         os.rename(img_source_path, img_destination_path)
+
+#         # Update the user's profile picture field
+#         # request.user.profile_picture = f'profile_pictures/{request.user.username}_profile_picture.png'
+#         request.user.profile_picture = f'profile_pictures/{os.path.basename(img_destination_path)}'
+#         request.user.save()
+#         messages.success(request, 'Profile picture updated successfully!')
+#     else:
+#         messages.error(request, 'No image available to keep.')
+
+#     return redirect('profile')
+
+# @login_required
+# def keep_img(request, image_name):
+#     """ Save the selected image as the profile picture for the user """
+#     img_directory = os.path.join(settings.MEDIA_ROOT, 'profile_pictures')
+#     os.makedirs(img_directory, exist_ok=True)
+
+#     img_source_path = os.path.join(settings.BASE_DIR, 'static', 'public', 'img', image_name)
+#     img_destination_path = os.path.join(img_directory, f"{request.user.username}_profile_picture.png")
+
+#     if os.path.exists(img_source_path):
+#         # Move the image from static to the media directory (rename it)
+#         os.rename(img_source_path, img_destination_path)
+
+#         # Update the user's profile picture field
+#         request.user.profile_picture = f'profile_pictures/{request.user.username}_profile_picture.png'
+#         request.user.save()
+#         messages.success(request, 'Profile picture updated successfully!')
+#     else:
+#         messages.error(request, 'The selected image does not exist.')
+
+#     return redirect('profile')
+
+import shutil
+
+@login_required
+def keep_img(request, image_name):
+    """ Save the selected image as the profile picture for the user """
+    img_directory = os.path.join(settings.MEDIA_ROOT, 'profile_pictures')
+    os.makedirs(img_directory, exist_ok=True)
+
+    img_source_path = os.path.join(settings.BASE_DIR, 'static', 'public', 'img', image_name)
+    img_destination_path = os.path.join(img_directory, f"{request.user.username}_profile_picture.png")
+
+    if os.path.exists(img_source_path):
+        try:
+            # If the destination file exists, remove it
+            if os.path.exists(img_destination_path):
+                os.remove(img_destination_path)
+
+            # Copy the image from static to the media directory (keep it in both locations)
+            shutil.copy(img_source_path, img_destination_path)
+
+            # Update the user's profile picture field
+            request.user.profile_picture = f'profile_pictures/{request.user.username}_profile_picture.png'
+            request.user.save()
+            messages.success(request, 'Profile picture updated successfully!')
+        except Exception as e:
+            messages.error(request, f"Error updating profile picture: {e}")
+    else:
+        messages.error(request, 'The selected image does not exist.')
+
+    return redirect('profile')
