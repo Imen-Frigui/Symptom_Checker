@@ -17,3 +17,5 @@ def blog(request):
 def dashboard(request):
     return render(request, 'back_office/pages/dashboard.html')
 
+    
+

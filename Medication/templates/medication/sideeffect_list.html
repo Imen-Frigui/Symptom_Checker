@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Side Effects List{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-primary">Manage Side Effects</h2>
+    <a href="{% url 'sideeffect_create' %}" class="btn btn-success mb-3">
+        <i class="fas fa-plus"></i> Add New Side Effect
+    </a>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sideeffect in page_obj %}
+            <tr>
+                <td>{{ sideeffect.description }}</td>
+                <td>
+                    <a href="{% url 'sideeffect_update' sideeffect.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="{% url 'sideeffect_delete' sideeffect.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Pagination Controls -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                </li>
+            {% endif %}
+            <li class="page-item disabled">
+                <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            </li>
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endblock %}

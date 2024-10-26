@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Treatments List{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-primary">Manage Treatments</h2>
+
+    <!-- Search Form -->
+    <form method="get" class="form-inline mb-3">
+        <div class="input-group">
+            <input type="text" name="search" value="{{ search_query }}" class="form-control" placeholder="Search Treatments...">
+            <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
+        </div>
+    </form>
+
+    <a href="{% url 'treatment_create' %}" class="btn btn-success mb-3">
+        <i class="fas fa-plus"></i> Add New Treatment
+    </a>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for treatment in page_obj %}
+            <tr>
+                <td>{{ treatment.name }}</td>
+                <td>{{ treatment.description|truncatewords:10 }}</td>
+                <td>
+                    <a href="{% url 'treatment_detail' treatment.pk %}" class="btn btn-info btn-sm">View</a>
+                    <a href="{% url 'treatment_update' treatment.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="{% url 'treatment_delete' treatment.pk %}" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal{{ treatment.pk }}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Pagination Controls -->
+    <nav aria-label="Page navigation" class="mt-3">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">Previous</a>
+                </li>
+            {% endif %}
+            <li class="page-item disabled">
+                <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            </li>
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}">Last</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+<!-- Delete Modal -->
+{% for treatment in page_obj %}
+<div class="modal fade" id="deleteModal{{ treatment.pk }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel">Delete Treatment</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete <strong>{{ treatment.name }}</strong>?
+            </div>
+            <div class="modal-footer">
+                <form method="post" action="{% url 'treatment_delete' treatment.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
