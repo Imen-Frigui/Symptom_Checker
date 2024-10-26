@@ -18,10 +18,23 @@ def institution_list(request):
     institutions = HealthCareInstitution.objects.all()
     return render(request, 'back_office/pages/institutions/institution_list.html', {'institutions': institutions})
 
+
+def institution_list_front(request):
+    institutions = HealthCareInstitution.objects.all()  # Fetch institutions if necessary
+    return render(request, 'front_office/institution.html', {'institutions': institutions})
+
+
 # View a specific Health Care Institution
 def institution_detail(request, pk):
     institution = get_object_or_404(HealthCareInstitution, pk=pk)
     return render(request, 'back_office/pages/institutions/institution_detail.html', {'institution': institution})
+
+
+# View a specific Health Care Institution
+def institution_detail_front(request, pk):
+    institution = get_object_or_404(HealthCareInstitution, pk=pk)
+    return render(request, 'front_office/institution-details.html', {'institution': institution})
+
 
 # Update a specific Health Care Institution
 def update_institution(request, pk):

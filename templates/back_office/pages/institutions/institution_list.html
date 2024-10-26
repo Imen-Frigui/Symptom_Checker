@@ -305,8 +305,13 @@
                                             <span class="badge badge-sm bg-gradient-success">{{ institution.institution_type }}</span>
                                         </td>
                                         <td class="align-middle text-center">
-                                            <span class="text-secondary text-xs font-weight-bold">{{ institution.rating }}</span>
+                                            <div class="rating">
+                                                {% for i in "12345" %}
+                                                    <i class="fas fa-star {% if i|add:0 <= institution.rating %}text-warning{% else %}text-secondary{% endif %}"></i>
+                                                {% endfor %}
+                                            </div>
                                         </td>
+                                        
                                         <td class="align-middle">
                                             <a href="{% url 'institution_detail' institution.pk %}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="View Details">Details |</a>
                                             <a href="{% url 'update_institution' institution.pk %}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">Edit |</a>

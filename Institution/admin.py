@@ -1,3 +1,9 @@
-from django.contrib import admin
+""" # institutions/admin.py
 
-# Register your models here.
+from django.contrib import admin
+from .models import HealthCareInstitution
+
+@admin.register(HealthCareInstitution)
+class InstitutionAdmin(admin.ModelAdmin):
+    list_display = ('name', 'address', 'latitude', 'longitude')
+ """
