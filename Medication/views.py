@@ -128,21 +128,17 @@ def sideeffect_delete(request, pk):
 
 # Treatment Views
 def treatment_list(request):
-    # Get search query from request
     search_query = request.GET.get('search', '')
 
-    # Filter treatments based on search query for name and description
     treatments_list = Treatment.objects.filter(
         Q(name__icontains=search_query) |
         Q(description__icontains=search_query)
     ).distinct()
 
-    # Paginate the treatments list (5 items per page)
     paginator = Paginator(treatments_list, 5)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    # Pass page_obj and search_query to the template
     return render(request, 'medication/treatment_list.html', {
         'page_obj': page_obj,
         'search_query': search_query
@@ -180,3 +176,21 @@ def treatment_detail(request, pk):
     treatment = get_object_or_404(Treatment, pk=pk)
     return render(request, 'medication/treatment_detail.html', {'treatment': treatment})
     
+
+
+def side_effect_severity_chart(request):
+    # Fetch all side effects with their descriptions and severity scores
+    side_effects = list(SideEffect.objects.values('description', 'severity_score', 'severity_label'))
+    return render(request, 'medication/side_effect_severity_chart.html', {'side_effects': json.dumps(side_effects)})
+
+
+def run_analysis(request):
+    # Run the severity analysis for all side effects in the database
+    side_effects = SideEffect.objects.all()
+    for side_effect in side_effects:
+        analysis_result = analyze_side_effect_severity(side_effect.description)
+        side_effect.severity_label = analysis_result['label']
+        side_effect.severity_score = analysis_result['score']
+        side_effect.save()
+    
+    return redirect('side_effect_severity_chart') 

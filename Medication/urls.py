@@ -23,5 +23,7 @@ urlpatterns = [
     path('treatments/<int:pk>/delete/', views.treatment_delete, name='treatment_delete'),
 
     path('generate-description/', views.generate_description_api, name='generate_description_api'),
+    path('run-analysis/', views.run_analysis, name='run_analysis'),
+    path('side_effect_severity_chart/', views.side_effect_severity_chart, name='side_effect_severity_chart'),
 
 ]

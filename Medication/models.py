@@ -11,6 +11,10 @@ class Medication(models.Model):
 
 class SideEffect(models.Model):
     description = models.CharField(max_length=255)
+    # Stores the NLP score (e.g., 0.1 to 1.0)
+    severity_score = models.FloatField(null=True, blank=True)  
+     # Stores the label (e.g., 'mild', 'moderate', 'severe')
+    severity_label = models.CharField(max_length=50, null=True, blank=True) 
 
     def __str__(self):
         return self.description
@@ -22,3 +26,6 @@ class Treatment(models.Model):
 
     def __str__(self):
         return self.name
+
+
+        

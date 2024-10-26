@@ -3,6 +3,10 @@
 {% block content %}
 <div class="container mt-5">
     <h2 class="text-primary">Manage Side Effects</h2>
+
+    <a href="{% url 'side_effect_severity_chart' %}" class="btn btn-primary mb-3">
+        <i class="fas fa-chart-bar"></i> Generate Severity Analysis
+    </a>
     <a href="{% url 'sideeffect_create' %}" class="btn btn-success mb-3">
         <i class="fas fa-plus"></i> Add New Side Effect
     </a>
