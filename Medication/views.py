@@ -1,8 +1,47 @@
+import os
+import io
+import requests
+import json
+import google.generativeai as genai
+from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Medication, SideEffect, Treatment
 from .forms import MedicationForm, SideEffectForm, TreatmentForm
 from django.core.paginator import Paginator 
 from django.db.models import Q 
+from django.views.decorators.csrf import csrf_exempt
+
+GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+genai.configure(api_key=GOOGLE_API_KEY)
+
+# generate description using Google Gemini API
+def generate_medication_description(name):
+    model = genai.GenerativeModel('gemini-1.5-flash')
+    prompt = f"Generate a detailed description for a medication called {name} in 3-4 lines."
+    
+    response = model.generate_content(prompt)
+    if response and hasattr(response, 'text'):
+        return response.text
+    return "Description not available."
+
+@csrf_exempt
+def generate_description_api(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            print("Received data:", data)  
+            medication_name = data.get("medication_name", "")
+
+            if not medication_name:
+                return HttpResponseBadRequest("Medication name is required.")
+
+            description = generate_medication_description(medication_name)
+            return JsonResponse({"description": description})
+
+        except json.JSONDecodeError as e:
+            print("JSON decode error:", e)
+            return HttpResponseBadRequest("Invalid JSON format.")
+    return HttpResponseBadRequest("Invalid request method")
 
 # Medication Views
 def medication_list(request):
@@ -140,3 +179,4 @@ def treatment_delete(request, pk):
 def treatment_detail(request, pk):
     treatment = get_object_or_404(Treatment, pk=pk)
     return render(request, 'medication/treatment_detail.html', {'treatment': treatment})
+    

@@ -22,5 +22,6 @@ urlpatterns = [
     path('treatments/<int:pk>/update/', views.treatment_update, name='treatment_update'),
     path('treatments/<int:pk>/delete/', views.treatment_delete, name='treatment_delete'),
 
-   
+    path('generate-description/', views.generate_description_api, name='generate_description_api'),
+
 ]

@@ -20,6 +20,18 @@
                     <textarea class="form-control" id="id_description" name="description" placeholder="Medication Description" rows="4">{{ form.description.value|default:'' }}</textarea>
                 </div>
             </div>
+             <!-- Generate Description Button -->
+      <div class="col-md-12 mt-2">
+        <button
+          type="button"
+          class="btn btn-info"
+          onclick="generateDescription()"
+        >
+          Generate Description
+        </button>
+      </div>
+    </div>
+
             <!-- Image Upload Field -->
             <div class="col-md-6">
                 <div class="form-group">
@@ -49,4 +61,31 @@
         </div>
     </form>
 </div>
+<script>
+    function generateDescription() {
+      const medicationName = document.getElementById("id_name").value;
+      if (!medicationName) {
+        alert("Please enter a medication name first.");
+        return;
+      }
+  
+      fetch("{% url 'generate_description_api' %}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": "{{ csrf_token }}",
+        },
+        body: JSON.stringify({ medication_name: medicationName }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.description) {
+            document.getElementById("id_description").value = data.description;
+          } else {
+            alert("Could not generate description.");
+          }
+        })
+        .catch((error) => console.error("Error:", error));
+    }
+  </script>
 {% endblock %}
