@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from symptom_checker_application import views
+from django.contrib.auth import views as auth_views
+from users import views as user_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,4 +28,13 @@ urlpatterns = [
     path('blog/', views.blog, name='blog'),
     path('dashboard/', views.dashboard, name='dashboard'),
 
+    # Authentication
+    path('accounts/login/', auth_views.LoginView.as_view(template_name='back_office/pages/sign-in.html'), name='login'),
+    path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('signup/', user_views.signup, name='signup'),
+
+    # User Management
+    path('profile/', user_views.profile, name='profile'),
+    path('profile/update/', user_views.update_profile, name='update_profile'),
+    path('profile/change-password/', user_views.change_password, name='change_password'), 
 ]
