@@ -140,10 +140,11 @@
           </div>
           <ul class="navbar-nav justify-content-end">
             <li class="nav-item d-flex align-items-center">
-              <a href="javascript:;" class="nav-link text-white font-weight-bold px-0">
-                <i class="fa fa-user me-sm-1"></i>
-                <span class="d-sm-inline d-none">Sign In</span>
+              <a href="{% url 'logout' %}" class="nav-link text-white font-weight-bold px-0">
+                <i class="fa fa-sign-out-alt me-sm-1"></i>
+                <span class="d-sm-inline d-none">Sign Out</span>
               </a>
+              
             </li>
             <li class="nav-item d-xl-none ps-3 pe-0 d-flex align-items-center">
               <a href="javascript:;" class="nav-link text-white p-0">
@@ -351,6 +352,16 @@
                       <div class="card-header text-center border-0 pt-0 pt-lg-2 pb-4 pb-lg-3">
                       </div>
                       <div class="card-body pt-0">
+                        <div class="col">
+                          <form method="POST" action="{% url 'update_profile_picture' %}" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ profile_picture_form.as_p }}
+                        
+                            <div class="text-center">
+                                <button type="submit" class="btn bg-gradient-dark w-100 my-4 mb-2">Upload Profile Picture</button>
+                            </div>
+                          </form>
+                        </div>
                         <div class="text-center mt-4">
                           <h5 class="card-title">Easily generate a profile picture using AI</h5>
                           <!-- Generate Image from Description Section -->
@@ -440,6 +451,16 @@
                       <div class="card-header text-center border-0 pt-0 pt-lg-2 pb-4 pb-lg-3">
                       </div>
                       <div class="card-body pt-0">
+                        <div class="col">
+                          <form method="POST" action="{% url 'update_profile_picture' %}" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ profile_picture_form.as_p }}
+                        
+                            <div class="text-center">
+                                <button type="submit" class="btn bg-gradient-dark w-100 my-4 mb-2">Upload Profile Picture</button>
+                            </div>
+                          </form>
+                        </div>
                         <div class="text-center mt-4">
                           <h5 class="card-title">Easily generate a profile picture using AI</h5>
                           <!-- Generate Image from Description Section -->

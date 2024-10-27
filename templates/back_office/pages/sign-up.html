@@ -150,8 +150,8 @@
               </div>
           {% endif %}
 
-              <form method="POST">
-                {% csrf_token %}
+          <form method="POST" action="{% url 'signup' %}">
+            {% csrf_token %}
                 <div class="mb-3">
                     <input type="text" name="username" class="form-control" placeholder="Username" aria-label="Username" required>
                 </div>
@@ -173,7 +173,7 @@
                 <div class="text-center">
                     <button type="submit" class="btn bg-gradient-dark w-100 my-4 mb-2">Sign up</button>
                 </div>
-              </form>
+            </form>
             </div>
           </div>
         </div>

@@ -19,7 +19,7 @@ def blog(request):
     return render(request, 'front_office/blog.html')
 
 # Admin-only view
-@login_required
-def dashboard(request):
-    return render(request, 'back_office/pages/dashboard.html')
+# @login_required
+# def dashboard(request):
+#     return render(request, 'back_office/pages/dashboard.html')
 

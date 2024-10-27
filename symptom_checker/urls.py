@@ -28,7 +28,7 @@ urlpatterns = [
     path('about/', views.about, name='about'),	
     path('contact/', views.contact, name='contact'),
     path('blog/', views.blog, name='blog'),
-    path('dashboard/', views.dashboard, name='dashboard'),
+    # path('dashboard/', views.dashboard, name='dashboard'),
 
     # Authentication
     path('accounts/login/', auth_views.LoginView.as_view(template_name='back_office/pages/sign-in.html'), name='login'),
@@ -39,13 +39,18 @@ urlpatterns = [
     path('profile/', user_views.profile, name='profile'),
     path('profile/update/', user_views.update_profile, name='update_profile'),
     path('profile/change-password/', user_views.change_password, name='change_password'), 
+    path('update_profile_picture/', user_views.update_profile_picture, name='update_profile_picture'),
+    path('user-management/', user_views.user_management, name='user_management'),
+    path('edit-user/<int:user_id>/', user_views.edit_user, name='edit_user'),
+    path('delete-user/<int:user_id>/', user_views.delete_user, name='delete_user'),
 
     #User Ai
     path('profile/generate-image/', user_views.generate_image_view, name='generate_image'),
     path('profile/keep-image/<str:image_name>/', user_views.keep_img, name='keep_image'),
+    path('check/', user_views.symptom_check, name='symptom_check'),
+    path('dashboard/', user_views.symptom_check, name='dashboard'),    
     
     # Facial recognition routes
-    path('register/', user_views.capture_and_encode_face, name='register'),
-    path('login/', user_views.facial_login, name='facial_login'),
+    path('facial_login/', user_views.facial_login, name='facial_login'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

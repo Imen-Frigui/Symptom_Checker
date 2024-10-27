@@ -23,7 +23,15 @@ import face_recognition
 import cv2
 import numpy as np
 from .models import CustomUser
-
+import cv2
+import face_recognition
+import numpy as np
+from django.shortcuts import render, redirect
+from .forms import SignUpForm
+from django.shortcuts import get_object_or_404, redirect
+from .forms import UserForm 
+from transformers import pipeline
+from .forms import SymptomForm
 
 logger = logging.getLogger(__name__)
 
@@ -50,12 +58,14 @@ def profile(request):
     password_form = PasswordChangeForm(request.user)
     image_generation_form = ImageGenerationForm()
     generated_image_url = None
+    profile_picture_form = ProfilePictureForm(instance=request.user)
 
     return render(request, 'back_office/pages/profile.html', {
         'profile_form': profile_form,
         'password_form': password_form,
         'image_generation_form': image_generation_form,
         'generated_image_url': generated_image_url,
+        'profile_picture_form': profile_picture_form,
     })
 
 
@@ -185,74 +195,169 @@ def keep_img(request, image_name):
     return redirect('profile')
 
 
-def capture_and_encode_face(request):
+from django.contrib import messages
+from .forms import ProfilePictureForm
+
+@login_required
+def update_profile_picture(request):
     if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            user = form.save()
+        # Handle profile picture upload
+        profile_picture_form = ProfilePictureForm(request.POST, request.FILES, instance=request.user)
+        if profile_picture_form.is_valid():
+            profile_picture_form.save()
+            messages.success(request, 'Your profile picture has been uploaded successfully!')
+            return redirect('profile')  # Redirect to the profile page
+        else:
+            messages.error(request, 'Error uploading profile picture. Please try again.')
+    
+    return redirect('profile')  # In case of a direct GET request, redirect to profile
 
-            # Capture the user's face using OpenCV
-            video_capture = cv2.VideoCapture(0)
 
-            ret, frame = video_capture.read()
-            video_capture.release()
 
-            # Convert the image from BGR color (which OpenCV uses) to RGB color
-            rgb_frame = frame[:, :, ::-1]
 
-            # Find all the faces in the image
-            face_locations = face_recognition.face_locations(rgb_frame)
-            if face_locations:
-                # Get the encoding of the first face
-                face_encoding = face_recognition.face_encodings(rgb_frame, face_locations)[0]
 
-                # Store the face encoding in the user's profile
-                user.face_encoding = np.array2string(face_encoding)
-                user.save()
-                messages.success(request, 'Your face has been registered successfully!')
 
-                return redirect('login')
-            else:
-                messages.error(request, 'No face detected. Please try again.')
-
-    else:
-        form = SignUpForm()
-
-    return render(request, 'users/register.html', {'form': form})
+from deepface import DeepFace
+from django.shortcuts import render, redirect
+from django.contrib.auth import login
+from django.contrib import messages
+from .models import CustomUser
+import cv2
+import os
 
 def facial_login(request):
     if request.method == 'POST':
-        # Capture the user's face using OpenCV
+        # Capture an image from the camera
         video_capture = cv2.VideoCapture(0)
-
         ret, frame = video_capture.read()
         video_capture.release()
 
-        # Convert the image from BGR color to RGB color
-        rgb_frame = frame[:, :, ::-1]
+        if not ret:
+            messages.error(request, "Failed to capture image from the camera.")
+            return redirect('login')
 
-        # Find all the faces in the image
-        face_locations = face_recognition.face_locations(rgb_frame)
-        if face_locations:
-            # Get the encoding of the captured face
-            face_encoding = face_recognition.face_encodings(rgb_frame, face_locations)[0]
+        # Save the captured frame temporarily
+        captured_img_path = "captured_img.jpg"
+        cv2.imwrite(captured_img_path, frame)
 
-            # Iterate over all users and compare the face encoding
-            users = CustomUser.objects.all()
-            for user in users:
-                if user.face_encoding:
-                    # Load the saved face encoding
-                    saved_face_encoding = np.fromstring(user.face_encoding[1:-1], sep=' ')
+        # Check against all users with profile pictures
+        for user in CustomUser.objects.all():
+            if user.profile_picture:
+                try:
+                    profile_picture_path = user.profile_picture.path
+                    
+                    # Compare the captured image with the user's profile picture using DeepFace
+                    result = DeepFace.verify(img1_path=captured_img_path, img2_path=profile_picture_path)
 
-                    # Compare the captured face encoding with the saved face encoding
-                    matches = face_recognition.compare_faces([saved_face_encoding], face_encoding)
-
-                    if matches[0]:
-                        # Log in the user if there is a match
+                    if result["verified"]:
+                        # Log the user in if the face matches
                         login(request, user)
                         messages.success(request, 'Logged in successfully using facial recognition!')
+                        os.remove(captured_img_path)  # Clean up temporary image
                         return redirect('dashboard')
+                except Exception as e:
+                    print(f"Error processing user {user.username}: {e}")
+                    continue  # If there's an issue, skip to the next user
+        
+        messages.error(request, 'No matching face found. Please try again.')
+        return redirect('login')
 
-            messages.error(request, 'No matching face found. Please try again.')
+    return render(request, 'back_office/pages/sign-in.html')
 
-    return render(request, 'users/facial_login.html')
+@login_required
+def user_management(request):
+    if request.user.role != 'admin':
+        return redirect('dashboard')
+
+    users = CustomUser.objects.all()
+    return render(request, 'back_office/pages/users/user-management.html', {'users': users})
+
+@login_required
+def edit_user(request, user_id):
+    if request.user.role != 'admin':  # Only admins can edit users
+        return redirect('dashboard')
+
+    user = get_object_or_404(CustomUser, id=user_id)
+
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=user)
+        if form.is_valid():
+            user = form.save(commit=False)
+            
+            # Check if both passwords are provided and match
+            new_password = form.cleaned_data.get('new_password')
+            confirm_password = form.cleaned_data.get('confirm_password')
+
+            if new_password and confirm_password and new_password == confirm_password:
+                user.set_password(new_password)
+            
+            user.save()  # Save the user with or without password update
+            messages.success(request, 'User updated successfully!')
+            return redirect('user_management')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = UserForm(instance=user)
+
+    return render(request, 'back_office/pages/users/edit-user.html', {'form': form, 'user': user})
+
+
+
+
+@login_required
+def delete_user(request, user_id):
+    if request.user.role != 'admin':
+        return redirect('dashboard')
+
+    user = get_object_or_404(CustomUser, id=user_id)
+
+    if user.is_superuser:
+        messages.error(request, "You cannot delete a superuser.")
+        return redirect('user_management')
+
+    user.delete()
+    messages.success(request, "User deleted successfully.")
+    return redirect('user_management')
+
+
+
+# Load a pre-trained model from Hugging Face for symptom checking
+# model = pipeline("text-generation", model="distilgpt2")
+# # model = pipeline("text-generation", model="dmis-lab/biobert-base-cased-v1.1")
+# def symptom_check(request):
+#     result = None
+#     if request.method == 'POST':
+#         form = SymptomForm(request.POST)
+#         if form.is_valid():
+#             symptoms = form.cleaned_data['symptoms']
+#             prompt = f"The patient has the following symptoms: {symptoms}. What could be the possible diagnosis?"
+#             result = model(prompt)[0]['generated_text']
+#             # result = model(prompt, max_length=100, max_new_tokens=50)[0]['generated_text']
+#     else:
+#         form = SymptomForm()
+    
+#     return render(request, 'symptom_checker.html', {'form': form, 'result': result})
+
+from transformers import pipeline
+
+# Load a question-answering model instead of text generation
+model = pipeline("question-answering")
+
+@login_required
+def symptom_check(request):
+    result = None
+    if request.method == 'POST':
+        form = SymptomForm(request.POST)
+        if form.is_valid():
+            symptoms = form.cleaned_data['symptoms']
+            prompt = f"What are the possible diagnoses for these symptoms: {symptoms}?"
+            
+            # Provide context for the question-answering model
+            context = "This patient reports having fever, headache, and cough. Common diagnoses include viral infections, colds, and flu."
+
+            # Use question-answering model instead of text generation
+            result = model(question=prompt, context=context)['answer']
+    else:
+        form = SymptomForm()
+
+    return render(request, 'back_office/pages/dashboard.html', {'form': form, 'result': result})
