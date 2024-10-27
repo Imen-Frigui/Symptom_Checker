@@ -225,6 +225,53 @@ from .models import CustomUser
 import cv2
 import os
 
+# def facial_login(request):
+#     if request.method == 'POST':
+#         # Capture an image from the camera
+#         video_capture = cv2.VideoCapture(0)
+#         ret, frame = video_capture.read()
+#         video_capture.release()
+
+#         if not ret:
+#             messages.error(request, "Failed to capture image from the camera.")
+#             return redirect('login')
+
+#         # Save the captured frame temporarily
+#         captured_img_path = "captured_img.jpg"
+#         cv2.imwrite(captured_img_path, frame)
+
+#         # Check against all users with profile pictures
+#         for user in CustomUser.objects.all():
+#             if user.profile_picture:
+#                 try:
+#                     profile_picture_path = user.profile_picture.path
+                    
+#                     # Compare the captured image with the user's profile picture using DeepFace
+#                     result = DeepFace.verify(img1_path=captured_img_path, img2_path=profile_picture_path)
+
+#                     if result["verified"]:
+#                         # Log the user in if the face matches
+#                         login(request, user)
+#                         messages.success(request, 'Logged in successfully using facial recognition!')
+#                         os.remove(captured_img_path)  # Clean up temporary image
+#                         return redirect('dashboard')
+#                 except Exception as e:
+#                     print(f"Error processing user {user.username}: {e}")
+#                     continue  # If there's an issue, skip to the next user
+        
+#         messages.error(request, 'No matching face found. Please try again.')
+#         return redirect('login')
+
+#     return render(request, 'back_office/pages/sign-in.html')
+
+from deepface import DeepFace
+from django.shortcuts import render, redirect
+from django.contrib.auth import login
+from django.contrib import messages
+from .models import CustomUser
+import cv2
+import os
+
 def facial_login(request):
     if request.method == 'POST':
         # Capture an image from the camera
@@ -236,33 +283,53 @@ def facial_login(request):
             messages.error(request, "Failed to capture image from the camera.")
             return redirect('login')
 
-        # Save the captured frame temporarily
+        # Save the captured frame temporarily and resize it
         captured_img_path = "captured_img.jpg"
-        cv2.imwrite(captured_img_path, frame)
+        resized_captured_img = cv2.resize(frame, (224, 224))  # Resizing to match the model's input size
+        cv2.imwrite(captured_img_path, resized_captured_img)
 
         # Check against all users with profile pictures
         for user in CustomUser.objects.all():
             if user.profile_picture:
                 try:
                     profile_picture_path = user.profile_picture.path
-                    
+
+                    # Load and resize the profile picture
+                    profile_picture = cv2.imread(profile_picture_path)
+                    resized_profile_picture = cv2.resize(profile_picture, (224, 224))
+
+                    # Save the resized profile picture temporarily
+                    profile_img_resized_path = "profile_img_resized.jpg"
+                    cv2.imwrite(profile_img_resized_path, resized_profile_picture)
+
                     # Compare the captured image with the user's profile picture using DeepFace
-                    result = DeepFace.verify(img1_path=captured_img_path, img2_path=profile_picture_path)
+                    result = DeepFace.verify(img1_path=captured_img_path, img2_path=profile_img_resized_path)
 
                     if result["verified"]:
                         # Log the user in if the face matches
                         login(request, user)
                         messages.success(request, 'Logged in successfully using facial recognition!')
                         os.remove(captured_img_path)  # Clean up temporary image
+                        os.remove(profile_img_resized_path)  # Clean up resized profile picture
                         return redirect('dashboard')
                 except Exception as e:
                     print(f"Error processing user {user.username}: {e}")
                     continue  # If there's an issue, skip to the next user
         
+        # If no match was found, show an error
         messages.error(request, 'No matching face found. Please try again.')
         return redirect('login')
 
     return render(request, 'back_office/pages/sign-in.html')
+
+
+def preprocess_image(image_path):
+    img = cv2.imread(image_path)
+    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    resized_img = cv2.resize(img_rgb, (224, 224))  # Resizing to 224x224 as an example
+    return resized_img
+
+
 
 @login_required
 def user_management(request):
