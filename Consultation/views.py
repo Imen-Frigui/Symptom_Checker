@@ -14,17 +14,13 @@ def consultation_list(request):
 #     return render(request, 'consultation/consultation_detail.html', {'consultation': consultation})
 
 def consultation_detail(request, pk):
-    # Retrieve the consultation object
     consultation = get_object_or_404(Consultation, pk=pk)
     
-    # Lazy load generate_summary
     summarizer_module = importlib.import_module("Consultation.summarizer")
     generate_summary = getattr(summarizer_module, "generate_summary")
     
-    # Generate the summary of consultation notes
     summary = generate_summary(consultation.notes)
 
-    # Render the consultation detail view
     return render(request, "consultation/consultation_detail.html", {
         "consultation": consultation,
         "summary": summary,

@@ -1,4 +1,3 @@
-# Consultation/summarizer.py
 
 from transformers import pipeline
 
