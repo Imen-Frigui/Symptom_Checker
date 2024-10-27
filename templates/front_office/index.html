@@ -135,44 +135,480 @@
         </div>
     </div>
     <!-- slider Area End-->
-    <!--? About Start-->
-    <div class="about-area section-padding2">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6 col-md-10">
-                    <div class="about-caption mb-50">
-                        <!-- Section Tittle -->
+   <!-- About Start -->
+<div class="about-area section-padding2">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-10">
+                
+                <div class="about-caption mb-50">
+                    
+                    <!-- Section Title -->
+                    <div class="section-tittle section-tittle2 mb-35">
+                        <span>Diagnosis Form</span>
+                        <h2>Submit Your Symptoms</h2>
+                    </div>
+                   
+                    <style>
+                        /* General styles for the form */
+                          
+
+                            /* Style for the labels */
+                            label {
+                                display: block; /* Make labels block elements */
+                                margin-bottom: 8px; /* Space below labels */
+                                font-weight: bold; /* Bold labels */
+                            }
+
+                            /* Style for radio buttons */
+                            .radio-inline {
+                                margin-right: 10px; /* Space between radio buttons */
+                            }
+
+                            /* Style for the input fields */
+                            input[type="number"],
+                            input[type="radio"] {
+                                margin-bottom: 15px; /* Space below inputs */
+                            }
+
+                            /* Style for radio buttons */
+                            input[type="radio"] {
+                                margin-right: 5px; /* Space between radio and label */
+                            }
+
+                            /* Style for input fields */
+                            input[type="number"] {
+                                width: 100%; /* Full width */
+                                padding: 8px; /* Padding inside the input */
+                                border: 1px solid #ccc; /* Light gray border */
+                                border-radius: 4px; /* Rounded corners */
+                                box-sizing: border-box; /* Include padding in width calculation */
+                            }
+
+                            /* Focus effect on input fields */
+                            input[type="number"]:focus {
+                                border-color: #007bff; /* Blue border on focus */
+                                outline: none; /* Remove outline */
+                                box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Blue shadow */
+                            }
+
+                            /* Style for the error message if needed */
+                            .error {
+                                color: red; /* Red color for error messages */
+                                font-size: 0.9em; /* Smaller font size */
+                                margin-top: -10px; /* Move up a bit */
+                                margin-bottom: 10px; /* Space below error message */
+                            }
+
+                        .modal {
+                            display: none; 
+                            position: fixed; 
+                            z-index: 1; 
+                            left: 0; 
+                            top: 0; 
+                            width: 100%; 
+                            height: 100%; 
+                            overflow: auto; 
+                            background-color: rgb(0,0,0); 
+                            background-color: rgba(0,0,0,0.4); 
+                            padding-top: 60px; 
+                        }
+                        .modal-content {
+                            background-color: #fefefe;
+                            margin: 5% auto; 
+                            padding: 20px;
+                            border: 1px solid #888;
+                            width: 80%; 
+                        }
+                        /* Container for the gender selection */
+                        /* Style for the gender selection container */
+#gender-selection {
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-around; /* Space the labels evenly */
+    margin: 20px 0; /* Margin around the gender selection */
+}
+
+                            /* Individual label styling */
+                            #gender-selection label {
+                                cursor: pointer; /* Change cursor to pointer on hover */
+                                padding: 5px; /* Add padding to labels */
+                                background-color: #ffffff; /* Light background color */
+                                border: 1px solid #ccc; /* Light gray border */
+                                border-radius: 5px; /* Rounded corners */
+                                transition: background-color 0.3s; /* Smooth background transition */
+                            }
+
+                            /* Change background color on hover */
+                            #gender-selection label:hover {
+                                background-color: #ffffff; /* Darker background on hover */
+                            }
+
+                            /* Style for the selected radio button */
+                            #gender-selection input[type="radio"]:checked + h3 {
+                                color: #007bff; /* Change text color for the selected option */
+                                font-weight: bold; /* Make text bold for emphasis */
+                            }
+
+                            /* Ensure that the radio button is hidden visually but still clickable */
+                            #gender-selection input[type="radio"] {
+                                position: absolute; /* Position off-screen */
+                                opacity: 0; /* Hide the actual radio button */
+                            }
+                            #inputBirth{
+                               
+                                font-size: large;
+                                
+                              
+                            }
+                            
+
+               
+                    </style>
+                </head>
+                <body>
+                    <form id="diagnosisForm">
+                        <!-- Gender selection -->
+                        <div id="gender-selection">
+                            <label class="radio-inline">
+                                <input type="radio" name="gender" value="male" required>
+                                <h3>Male</h3>
+                            </label>
+                            <label>
+                                <input type="radio" name="gender" value="female">
+                                <h3>Female</h3>
+                            </label>
+                        </div>
+                    
+                        <!-- Year of birth input -->
+                        <div class="section-tittle section-tittle2 mb-2">
+                            <span for="year_of_birth">Year of Birth:</span>
+                        
+                            <div id="inputBirth">
+                                <input type="number" name="year_of_birth" id="year_of_birth" required>
+                            </div>
+                        </div>
+                    
+                        <!-- Search Symptoms -->
                         <div class="section-tittle section-tittle2 mb-35">
-                            <span>About Our Company</span>
-                            <h2>Welcome To Our Hospital</h2>
-                        </div>
-                        <p>There arge many variations ohf pacgssages of sorem gpsum ilable, but the majority have suffered alteration in some form, by ected humour, or randomised words whi.</p>
-                        <div class="about-btn1 mb-30">
-                            <a href="about.html" class="btn about-btn">Find Doctors .<i class="ti-arrow-right"></i></a>
-                        </div>
-                        <div class="about-btn1 mb-30">
-                            <a href="about.html" class="btn about-btn2">Appointment <i class="ti-arrow-right"></i></a>
-                        </div>
-                        <div class="about-btn1 mb-30">
-                            <a href="about.html" class="btn about-btn2">Emargency 1 <i class="ti-arrow-right"></i></a>
+                         <span>Search Symptoms:</span>
+                            <div id="inputBirth">
+                            <input type="text" id="symptomSearch" placeholder="Type to search..." oninput="filterSymptoms()">
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-6 col-md-12">
-                    <!-- about-img -->
-                    <div class="about-img ">
-                        <div class="about-font-img d-none d-lg-block">
-                            <img src="front_office/assets/img/gallery/about2.png" alt="">
+                 
+
+                        <!-- Symptoms selection -->
+                        <div class="form-group">
+                            <div class="section-tittle section-tittle2 mb-2">
+                                <span>Select Symptoms:</span>
+                            </div>
+                            <div id="symptom-buttons">
+                                {% for symptom in symptoms %}
+                                    <label class="symptom-button">
+                                        <input type="checkbox" name="symptoms" value="{{ symptom.ID }}" style="display:none;" onchange="toggleButton(this)">
+                                        <h4 class="symptom-name">{{ symptom.Name }}</h4>
+                                    </label>
+                                {% endfor %}
+                            </div>
                         </div>
-                        <div class="about-back-img ">
-                            <img src="front_office/assets/img/gallery/about1.png" alt="">
-                        </div>
+                    
+                        <button type="submit" class="btn about-btn">Diagnose<i class="ti-arrow-right"></i></button>
+                    </form>
+                    
+
+        <!-- Diagnosis Results Section -->
+        <div id="diagnosisModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" id="modalClose">&times;</span>
+                <h2>Diagnosis Results</h2>
+                <div id="modalDiagnosisContent"></div>
+            </div>
+        </div>
+        
+        
+        <!-- Add CSS for Modal -->
+        <style>
+            /* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.7); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #fff; /* White background */
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px; /* Padding */
+    border: 1px solid #888; /* Grey border */
+    border-radius: 8px; /* Rounded corners */
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* Diagnosis Item Styles */
+.diagnosis-item {
+    margin-bottom: 20px; /* Space between diagnosis items */
+    padding: 10px;       /* Padding around each item */
+    border: 1px solid #ddd; /* Light border for distinction */
+    border-radius: 5px; /* Rounded corners */
+    background-color: #f9f9f9; /* Light background color */
+}
+
+.diagnosis-item h4 {
+    margin: 0; /* Remove default margin for the heading */
+    color: #333; /* Dark color for the heading */
+}
+
+.diagnosis-item p {
+    margin: 5px 0; /* Space between paragraphs */
+    color: #555; /* Slightly lighter color for text */
+}
+
+.diagnosis-item ul {
+    padding-left: 20px; /* Indent for the list */
+    color: #444; /* Color for specialisation list */
+}
+
+/* Score Bar Styles */
+.score-bar {
+    width: 100%; /* Full width of the parent */
+    background-color: #e0e0e0; /* Light grey background */
+    border-radius: 5px; /* Rounded corners */
+    height: 20px; /* Fixed height for the bar */
+    margin: 5px 0; /* Space around the score bar */
+    overflow: hidden; /* Hide overflow */
+}
+
+.score-fill {
+    height: 100%; /* Full height of the score bar */
+    background-color: #76c7c0; /* Color representing the score */
+    text-align: center; /* Center the text */
+    color: white; /* Text color */
+    line-height: 20px; /* Center text vertically */
+    font-weight: bold; /* Bold text */
+}
+textarea {
+    font-size: large;
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            resize: none;
+        }
+
+        </style>
+</div>
+
+            <div class="col-lg-6 col-md-12">
+                <!-- about-img -->
+                <h1>Extract Medical Recommendations</h1>
+
+                <!-- Display errors if any -->
+                {% if error %}
+                    <p>{{ error }}</p>
+                {% endif %}
+            
+                <!-- Form for user input -->
+                <form method="post" action="{% url 'medical_entities' %}">
+                    {% csrf_token %}
+                    <label for="description">Describe your symptoms or medical condition:</label>
+                    <textarea id="description" name="description" rows="4"  required>{{ user_input }}</textarea>
+                    <button type="submit" class="btn about-btn">Submit</button>
+                </form>
+            
+                <!-- Display extracted medical entities -->
+                {% if entities %}
+                    <h2>Extracted Medical Entities:</h2>
+                    <ul>
+                        {% for entity in entities %}
+                            <li>
+                                <strong>Entity:</strong> {{ entity.entity_group }},
+                                <strong>Text:</strong> {{ entity.word }},
+                                <strong>Score:</strong> {{ entity.score|floatformat:2 }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+            
+                    <!-- Button to generate recommendations -->
+                  
+                {% endif %}
+            
+                <!-- Display recommendations -->
+                {% if recommendations %}
+                    <h2>Recommendations:</h2>
+                    <div class="recommendations">
+                        
+                          
+                              <h5> {{ recommendations }}</h5> 
+                 
+                       
                     </div>
+                {% endif %}
+                    </div>
+                    
                 </div>
             </div>
         </div>
     </div>
-    <!-- About  End-->
+</div>
+<!-- About End -->
+
+<!-- Add this CSS to your stylesheet -->
+<style>
+    .symptom-button {
+        display: inline-block;
+        padding: 10px 20px;
+        margin: 5px;
+        border: 2px solid #007bff; /* Button border color */
+        border-radius: 5px;
+        background-color: #fff; /* Button background color */
+        color: #007bff; /* Button text color */
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .symptom-button.selected {
+        background-color: #007bff; /* Selected button background color */
+        color: white; /* Selected button text color */
+    }
+
+    .symptom-button input[type="checkbox"] {
+        display: none; /* Hide the checkbox */
+    }
+    .diagnosis-item {
+    margin-bottom: 20px; /* Space between diagnosis items */
+    padding: 10px;       /* Padding around each item */
+    border: 1px solid #ddd; /* Light border for distinction */
+    border-radius: 5px; /* Rounded corners */
+    background-color: #f9f9f9; /* Light background color */
+}
+
+
+
+</style>
+
+<!-- Add this JavaScript to handle button toggling -->
+<script>
+    function filterSymptoms() {
+    const searchInput = document.getElementById("symptomSearch").value.toLowerCase(); // Get the search input
+    const symptomButtons = document.querySelectorAll("#symptom-buttons .symptom-button"); // Get all symptom labels
+
+    symptomButtons.forEach(button => {
+        const symptomName = button.querySelector(".symptom-name").textContent.toLowerCase(); // Get the symptom name
+        // Show or hide the symptom based on the search input
+        if (symptomName.includes(searchInput)) {
+            button.style.display = ""; // Show if it matches
+        } else {
+            button.style.display = "none"; // Hide if it doesn't match
+        }
+    });
+}
+
+    // Array to hold selected symptom IDs
+    let selectedSymptoms = [];
+
+    function toggleButton(checkbox) {
+        const label = checkbox.parentNode;
+        const symptomId = checkbox.value;
+
+        if (checkbox.checked) {
+            label.classList.add('selected');
+            if (!selectedSymptoms.includes(symptomId)) {
+                selectedSymptoms.push(symptomId); // Add ID to the list
+            }
+        } else {
+            label.classList.remove('selected');
+            selectedSymptoms = selectedSymptoms.filter(id => id !== symptomId); // Remove ID from the list
+        }
+
+        console.log('Selected Symptoms:', selectedSymptoms);
+    }
+
+    function prepareSubmit(event) {
+        // Prevent default form submission
+        event.preventDefault();
+
+        // Submit the selected symptoms via AJAX
+        fetch("{% url 'diagnose' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": '{{ csrf_token }}', // Include CSRF token for Django
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: `symptoms=${selectedSymptoms.join(',')}&gender=${document.querySelector('input[name="gender"]:checked').value}&year_of_birth=${document.querySelector('input[name="year_of_birth"]').value}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error("Error:", data.error);
+                alert("An error occurred: " + data.error);
+            } else {
+                showDiagnosisModal(data.diagnosis); // Show the results in the modal
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    }
+
+    function showDiagnosisModal(diagnosis) {
+    const modal = document.getElementById('diagnosisModal');
+    const modalContent = document.getElementById('modalDiagnosisContent');
+
+    modalContent.innerHTML = `<h3>Your Diagnosis Results:</h3><ul>`;
+
+const topDiagnoses = diagnosis.sort((a, b) => b.Issue.Accuracy - a.Issue.Accuracy).slice(0, 3);
+
+topDiagnoses.forEach(item => {
+    // Extract relevant information from the diagnosis
+    const issue = item.Issue; // This gives you the Issue object
+    const specialisation = item.Specialisation; // 
+
+    // Display the Issue details with a score bar
+      modalContent.innerHTML += `
+        <div class="diagnosis-item">
+            <h4>Issue: ${issue.Name}</h4>
+            <p><strong>Accuracy:</strong> ${issue.Accuracy}%</p>
+            <div class="score-bar">
+                <div class="score-fill" style="width: ${issue.Accuracy}%;"></div>
+            </div>
+            <p><strong>ICD:</strong> ${issue.Icd}</p>
+            <p><strong>ICD Name:</strong> ${issue.IcdName}</p>
+            <p><strong>Professional Name:</strong> ${issue.ProfName}</p>
+            <p><strong>Ranking:</strong> ${issue.Ranking}</p>
+            
+            <strong>Recommended Specialisations:</strong>
+            ${specialisation.length > 0 ? `<ul>` : `<p>No specialisations available.</p>`}
+            ${specialisation.map(spec => `<li>${spec.Name}</li>`).join('')}
+            ${specialisation.length > 0 ? `</ul>` : ``}
+        </div>
+        <hr>
+    `;
+});
+
+// Show the modal
+modal.style.display = 'block';
+
+}
+
+    // Close modal when clicking on close button
+    document.getElementById('modalClose').onclick = function() {
+        const modal = document.getElementById('diagnosisModal');
+        modal.style.display = 'none'; // Hide the modal
+    };
+
+    // Call this function on form submission
+    document.querySelector('form').onsubmit = prepareSubmit;
+
+</script>
+
+
     <!--? department_area_start  -->
     <div class="department_area section-padding2">
         <div class="container">
@@ -180,6 +616,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-tittle text-center mb-100">
+                        
                         <span>Our Departments</span>
                         <h2>Our Medical Services</h2>
                     </div>

@@ -1,9 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
 # Create your views here.
 
+
 def index(request):
-    return render(request, 'front_office/index.html')
+    return redirect('diagnose')
 
 def about(request):
     return render(request, 'front_office/about.html')
@@ -16,4 +17,5 @@ def blog(request):
 
 def dashboard(request):
     return render(request, 'back_office/pages/dashboard.html')
+
 
