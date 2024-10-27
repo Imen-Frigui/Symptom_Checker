@@ -341,7 +341,8 @@ def delete_user(request, user_id):
 from transformers import pipeline
 
 # Load a question-answering model instead of text generation
-model = pipeline("question-answering")
+# model = pipeline("question-answering")
+model = pipeline("question-answering", model="dmis-lab/biobert-base-cased-v1.1")
 
 @login_required
 def symptom_check(request):
