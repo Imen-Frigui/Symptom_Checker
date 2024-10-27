@@ -32,8 +32,8 @@ class HealthCareInstitution(models.Model):
         null=True
     )
     capacity = models.IntegerField(blank=True, null=True)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
+    latitude = models.DecimalField(max_digits=20, decimal_places=6, blank=True, null=True)
+    longitude = models.DecimalField(max_digits=20, decimal_places=6, blank=True, null=True)
 
     def __str__(self):
         return self.name

@@ -24,6 +24,13 @@
   <title>
     Argon Dashboard 3 by Creative Tim
   </title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <style>
+      #map {
+          height: 400px; /* Set height for the map */
+      }
+  </style>
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
   <!-- Nucleo Icons -->
@@ -266,6 +273,8 @@
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
+             <!-- Map Container -->
+             <div id="map"></div>
             <div class="d-flex justify-content-start mb-3"> <!-- Flex container -->
                 <button class="btn btn-dark btn-sm me-2" type="submit">Edit</button> <!-- Add margin end -->
                 <a href="{% url 'institution_detail' form.instance.pk %}" class="btn btn-light btn-sm">Cancel</a> <!-- Add Bootstrap button classes -->
@@ -274,4 +283,70 @@
     </div>
     
     <div class="mt-3"></div>
-    
+
+    <script>
+        // Initialize the map
+        var map = L.map('map').setView([51.505, -0.09], 13); // Default view
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        var marker;
+
+        // Event listener for map click
+        map.on('click', function (e) {
+            var lat = e.latlng.lat; // Get latitude
+            var lng = e.latlng.lng; // Get longitude
+
+            // If a marker exists, remove it
+            if (marker) {
+                map.removeLayer(marker);
+            }
+
+            // Add a marker at the clicked location
+            marker = L.marker([lat, lng]).addTo(map);
+
+            // Truncate to 9 characters to avoid longer inputs
+            var truncatedLat = lat.toString().slice(0, 9);
+            var truncatedLng = lng.toString().slice(0, 9);
+
+            // Autofill hidden input fields with latitude and longitude
+            document.getElementById('id_latitude').value = truncatedLat;  // Use Django's ID format
+            document.getElementById('id_longitude').value = truncatedLng; // Use Django's ID format
+
+            // Log the updated values
+            console.log('Updated Latitude:', truncatedLat);
+            console.log('Updated Longitude:', truncatedLng);
+        });
+
+        // Validate the form before submission
+        function validateForm() {
+            var lat = document.getElementById('id_latitude').value;
+            var lng = document.getElementById('id_longitude').value;
+
+            // Check if latitude is a valid number and within the range
+            if (!isValidLatitude(lat)) {
+                alert("Invalid latitude! Please ensure it is a number with up to 9 digits.");
+                return false; // Prevent form submission
+            }
+
+            // Check if longitude is a valid number and within the range
+            if (!isValidLongitude(lng)) {
+                alert("Invalid longitude! Please ensure it is a number with up to 9 digits.");
+                return false; // Prevent form submission
+            }
+
+            return true; // Allow form submission
+        }
+
+        // Function to check valid latitude
+        function isValidLatitude(lat) {
+            return /^-?\d{1,9}(\.\d+)?$/.test(lat) && lat.length <= 9; // Matches numbers with optional negative sign and up to 9 digits
+        }
+
+        // Function to check valid longitude
+        function isValidLongitude(lng) {
+            return /^-?\d{1,9}(\.\d+)?$/.test(lng) && lng.length <= 9; // Matches numbers with optional negative sign and up to 9 digits
+        }
+    </script>
