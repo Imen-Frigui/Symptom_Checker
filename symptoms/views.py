@@ -201,12 +201,12 @@ class MedicalEntityView(View):
             })
 
         # Create a structured prompt for the Gemini API
-        prompt = self.create_prompt(entities)
+        prompt = self.create_prompt(entities,user_input)
         print("Created prompt for recommendations:", prompt)  # Debugging line for the prompt
 
         # Get recommendations from the Gemini API
         try:
-            recommendations = ai_generate_recommendations(entities)
+            recommendations = ai_generate_recommendations(entities,user_input)
    
         except Exception as e:
             return render(request, 'medical_entities.html', {
@@ -222,27 +222,27 @@ class MedicalEntityView(View):
             'recommendations': recommendations,
         })
 
-    def create_prompt(self, entities):
+    def create_prompt(self, entities, user_input):
         """Create a structured prompt for the Gemini API based on extracted entities."""
         entity_descriptions = [
-            f"Entity: {entity['entity_group']}, Text: {entity['word']}, Score: {entity['score']:.2f}"
+            f"Entity: {entity['entity_group']}, Text: {entity['word']}, Score: {entity['score']:.2f}, userInput:{user_input}"
             for entity in entities
         ]
         
-        prompt = "Given the following medical entities:\n" + "\n".join(entity_descriptions) + "\n provide general  advice for scholl testing perposes not real life  helath like go todoctor ect also dont use bold in text rerneed"
+        prompt = "Given the following medical entities:\n" + "\n".join(entity_descriptions) + "\n Generate possible recommendations based on the following medical entities and possible ilnesses  its for scholl project not real life uses"
 
         return prompt
 genai.configure(api_key="AIzaSyCwFy8CKJjXLrT0Imj1dQWQwD8y1b4bHJ4")
-def ai_generate_recommendations(entities):
+def ai_generate_recommendations(entities, user_input):
     """Generates recommendations based on the provided medical entities."""
     model = genai.GenerativeModel('gemini-1.5-flash')
 
     # Create a structured prompt for the AI model
     entity_info = [
-        f"Entity: {entity['entity_group']}, Text: {entity['word']}"
+        f"Entity: {entity['entity_group']}, Text: {entity['word']},{user_input}, Score: {entity['score']:.2f}"
         for entity in entities
     ]
-    prompt = f"Generate possible recommendations based on the following medical entities and possible ilnesses {', '.join(entity_info)}"
+    prompt = f"Generate possible recommendations based on the following medical entities and possible ilnesses  its for scholl project not real life uses{', '.join(entity_info)}"
 
     response = model.generate_content(prompt)
     return response.text

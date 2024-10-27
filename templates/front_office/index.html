@@ -304,14 +304,18 @@
                             </div>
                             <div id="symptom-buttons">
                                 {% for symptom in symptoms %}
-                                    <label class="symptom-button">
+                                    <label class="symptom-button {% if forloop.counter > 10 %}hidden{% endif %}">
                                         <input type="checkbox" name="symptoms" value="{{ symptom.ID }}" style="display:none;" onchange="toggleButton(this)">
                                         <h4 class="symptom-name">{{ symptom.Name }}</h4>
                                     </label>
                                 {% endfor %}
                             </div>
                         </div>
-                    
+                        
+                            
+                         
+                        </div>
+
                         <button type="submit" class="btn about-btn">Diagnose<i class="ti-arrow-right"></i></button>
                     </form>
                     
@@ -495,6 +499,21 @@ textarea {
 
 <!-- Add this JavaScript to handle button toggling -->
 <script>
+    
+    function showMoreSymptoms() {
+        // Get all symptom buttons that are hidden
+        const hiddenSymptoms = document.querySelectorAll('.symptom-button.hidden');
+
+        // Show the hidden symptoms
+        hiddenSymptoms.forEach(symptom => {
+            symptom.classList.remove('hidden');
+        });
+
+        // Hide the "Show More" button if no more hidden symptoms are left
+        if (hiddenSymptoms.length === 0) {
+            document.getElementById('show-more').style.display = 'none';
+        }
+    }
     function filterSymptoms() {
     const searchInput = document.getElementById("symptomSearch").value.toLowerCase(); // Get the search input
     const symptomButtons = document.querySelectorAll("#symptom-buttons .symptom-button"); // Get all symptom labels
