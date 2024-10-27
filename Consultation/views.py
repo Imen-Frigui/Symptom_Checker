@@ -3,14 +3,33 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Consultation
 from .forms import ConsultationForm
+import importlib 
 
 def consultation_list(request):
     consultations = Consultation.objects.all()
     return render(request, 'consultation/consultation_list.html', {'consultations': consultations})
 
+# def consultation_detail(request, pk):
+#     consultation = get_object_or_404(Consultation, pk=pk)
+#     return render(request, 'consultation/consultation_detail.html', {'consultation': consultation})
+
 def consultation_detail(request, pk):
+    # Retrieve the consultation object
     consultation = get_object_or_404(Consultation, pk=pk)
-    return render(request, 'consultation/consultation_detail.html', {'consultation': consultation})
+    
+    # Lazy load generate_summary
+    summarizer_module = importlib.import_module("Consultation.summarizer")
+    generate_summary = getattr(summarizer_module, "generate_summary")
+    
+    # Generate the summary of consultation notes
+    summary = generate_summary(consultation.notes)
+
+    # Render the consultation detail view
+    return render(request, "consultation/consultation_detail.html", {
+        "consultation": consultation,
+        "summary": summary,
+    })
+
 
 def consultation_create(request):
     if request.method == 'POST':
