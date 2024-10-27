@@ -6,7 +6,13 @@ from .views import (
     update_institution,
     delete_institution,
     institution_list_front,
-    institution_detail_front
+    institution_detail_front,
+    find_nearby_institutions,
+    recommend_institution,
+    chatbot_view,
+    chatbot_reply,
+    open_chatbot
+    
 )
 
 urlpatterns = [
@@ -17,5 +23,11 @@ urlpatterns = [
     path('<int:pk>/delete/', delete_institution, name='delete_institution'),  # Delete an institution
     path('front/', institution_list_front, name='institution_list_front'),  # Front office list of institutions
     path('front/<int:pk>/', institution_detail_front, name='institution_detail_front'),  # Correctly define the detail view with a pk
-]   
+    path('find-nearby/', find_nearby_institutions, name='find_nearby_institutions'),
+     path('recommend/', recommend_institution, name='recommend_institution'),
+    path('chatbot/', chatbot_view, name='chatbot_view'),
+    path('chatbot/reply/', chatbot_reply, name='chatbot_reply'),
+path('open_chatbot/', open_chatbot, name='open_chatbot'),
+
+    ]   
 

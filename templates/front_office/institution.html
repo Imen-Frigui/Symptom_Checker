@@ -9,7 +9,165 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="manifest" href="{% static 'site.webmanifest' %}">
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'front_office/assets/img/favicon.ico' %}">
-    
+    <style>
+            /* Basic reset */
+            * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4; /* Light background for better contrast */
+            color: #333; /* Dark text color for readability */
+        }
+
+        /* Chatbot window styles */
+        #chatbot {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 400px; /* Fixed width for the chatbot */
+            max-width: 90%; /* Responsive max width */
+            background-color: #ffffff; /* White background */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            display: none; /* Hidden by default */
+            flex-direction: column; /* Stack elements vertically */
+            z-index: 1000; /* Ensure it's on top */
+            margin-bottom: 70px;
+            padding: 20px;
+        }
+
+        #chat-log {
+            flex-grow: 1; /* Allow chat log to grow and fill available space */
+            overflow-y: auto; /* Enable vertical scrolling */
+            max-height: 300px; /* Limit height */
+            border: 1px solid #ccc; /* Border for chat log */
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #fafafa; /* Light gray background */
+            margin-bottom: 10px; /* Space between log and input */
+        }
+
+        #user-input {
+            border: 1px solid #ccc; /* Light border */
+            border-radius: 5px; /* Rounded corners */
+            padding: 10px; /* Padding inside input */
+            font-size: 16px; /* Larger font for readability */
+            width: calc(100% - 22px); /* Full width minus padding */
+            margin-bottom: 10px; /* Space below input */
+        }
+
+        #send-btn {
+            background-color: #007bff; /* Green background */
+            color: white; /* White text */
+            border: none; /* No border */
+            border-radius: 5px; /* Rounded corners */
+            padding: 10px; /* Padding for button */
+            cursor: pointer; /* Pointer cursor on hover */
+            font-size: 16px; /* Larger font */
+            transition: background-color 0.3s; /* Transition for hover effect */
+        }
+
+        #send-btn:hover {
+            background-color: #007bff; /* Darker green on hover */
+        }
+
+        /* Chat messages styles */
+        .message {
+            margin: 5px 0; /* Space between messages */
+            padding: 10px;
+            border-radius: 10px; /* Rounded corners for messages */
+            position: relative; /* Position for potential pseudo-elements */
+            max-width: 80%; /* Max width for messages */
+            animation: fadeIn 0.5s; /* Fade in animation for messages */
+        }
+
+        .user-message {
+            background-color: #007bff; /* Messenger blue for user messages */
+            color: white; /* White text for readability */
+            align-self: flex-end; /* Align user messages to the right */
+            border-top-right-radius: 0; /* Square top-right corner */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+        }
+
+        .bot-message {
+            background-color: #f1f0f0; /* Light gray for bot messages */
+            color: #333; /* Dark text for readability */
+            align-self: flex-start; /* Align bot messages to the left */
+            border-top-left-radius: 0; /* Square top-left corner */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+
+        /* Typing indicator */
+        .typing {
+            display: flex;
+            align-items: center;
+            margin: 5px 0; /* Space above and below the typing indicator */
+        }
+
+        .typing::after {
+            content: "…"; /* Ellipsis for typing effect */
+            animation: blink 1s infinite; /* Blinking animation */
+        }
+
+        @keyframes blink {
+            0%, 100% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Chat icon styles */
+        #chat-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #007bff; /* Green background */
+            border-radius: 50%; /* Circle shape */
+            width: 60px; /* Size of the icon */
+            height: 60px; /* Size of the icon */
+            color: white; /* Icon color */
+            display: flex;
+            justify-content: center; /* Center icon */
+            align-items: center; /* Center icon */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow effect */
+            cursor: pointer; /* Pointer cursor on hover */
+            z-index: 1001; /* Ensure it's above the chat window */
+        }
+
+        #chat-icon:hover {
+            background-color: #007bff; /* Darker green on hover */
+        }
+
+        /* Icon symbol */
+        #chat-icon::before {
+            content: '💬'; /* Emoji chat icon */
+            font-size: 30px; /* Size of the icon */
+        }
+
+        /* Animation for messages */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .button-container {
+            display: flex; /* Enable flexbox */
+            justify-content: center; /* Center items horizontally */
+            align-items: center; /* Center items vertically (optional) */
+        }
+        
+    </style>
+    {% csrf_token %}
+
 	<!-- CSS here -->
 	<link rel="stylesheet" href="{% static 'front_office/assets/css/bootstrap.min.css' %}">
 	<link rel="stylesheet" href="{% static 'front_office/assets/css/owl.carousel.min.css' %}">
@@ -87,7 +245,15 @@
     </div>
     <!-- Header End -->
 </header>
-<main>
+
+    <div id="chatbot">
+        <h1>Chatbot Assistant</h1>
+        <div id="chat-log"></div>
+        <input type="text" id="user-input" placeholder="Describe your symptoms..." />
+        <button id="send-btn">Send</button>
+    </div>
+
+    <div id="chat-icon"></div> <!-- Chat icon -->
 
 
     <div class="gallery-area section-padding30">
@@ -97,7 +263,25 @@
             <div class="section-tittle text-center mb-100">
                 <span>Our Institutions</span>
                 <h2>Our HealthCare Institutions</h2>
+                <div class="button-container">
+                    <a href="{% url 'find_nearby_institutions' %}" class="btn hero-btn w-50" 
+                       style="
+                           display: inline-block; 
+                           padding: 10px 20px; 
+                           background-color: #4CAF50; 
+                           color: white; 
+                           text-decoration: none; 
+                           border-radius: 5px; 
+                           text-align: center; 
+                           transition: background-color 0.3s;"
+                       data-animation="fadeInLeft" data-delay="0.5s">
+                        Find Nearby Health Care Institutions <i class="ti-arrow-right"></i>
+                    </a>
+                </div>
             </div>
+         
+            
+            
         </div>
     </div>
     <div class="department_area ">
@@ -119,7 +303,9 @@
                                     <i class="fas fa-star {% if i|add:0 <= institution.rating %}text-warning{% else %}text-secondary{% endif %}"></i>
                                 {% endfor %}
                             </div></h3>
-                            <span>{{ institution.email }}</span>
+                            
+                                <span>{{ institution.institution_type }}</span>
+                           
                           
                           
                             <!-- Team social -->
@@ -136,130 +322,198 @@
         </div>
     </div>
     </div>
-    
+        </div></div>
 
 
 
-    </main>
-    <footer>
-        <!--? Footer Start-->
-        <div class="footer-area section-bg" data-background="front_office/assets/img/gallery/footer_bg.jpg">
-            <div class="container">
-                <div class="footer-top footer-padding">
-                    <div class="row d-flex justify-content-between">
-                        <div class="col-xl-3 col-lg-3 col-md-4 col-sm-8">
-                            <div class="single-footer-caption mb-50">
-                                <!-- logo -->
-                                <div class="footer-logo">
-                                    <a href="index.html" ><img src="front_office/assets/img/logo/logo2_footer.png"  alt=""></a>
-                                </div>
+
+
+
+
+</main>
+<footer>
+    <!--? Footer Start-->
+    <div class="footer-area section-bg" data-background="front_office/assets/img/gallery/footer_bg.jpg">
+        <div class="container">
+            <div class="footer-top footer-padding">
+                <div class="row d-flex justify-content-between">
+                    <div class="col-xl-3 col-lg-3 col-md-4 col-sm-8">
+                        <div class="single-footer-caption mb-50">
+                            <!-- logo -->
+                            <div class="footer-logo">
+                                <a href="index.html" ><img src="front_office/assets/img/logo/logo2_footer.png"  alt=""></a>
                             </div>
                         </div>
-                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-5">
-                            <div class="single-footer-caption mb-50">
-                                <div class="footer-tittle">
-                                    <h4>About Us</h4>
-                                    <div class="footer-pera">
-                                        <p class="info1">Lorem igpsum doldfor sit amet, adipiscing elit, sed do eiusmod tempor cergelit rgh. </p>
-                                        <p class="info1">Lorem ipsum dolor sit amet, adipiscing elit.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-8">
-                            <div class="single-footer-caption mb-50">
-                                <div class="footer-number mb-50">
-                                    <h4><span>+564 </span>7885 3222</h4>
-                                    <p>youremail@gmail.com</p>
-                                </div>
-                                <!-- Form -->
-                                <div class="footer-form">
-                                    <div id="mc_embed_signup">
-                                        <form target="_blank" action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01" method="get" class="subscribe_form relative mail_part" novalidate="true">
-                                            <input type="email" name="EMAIL" id="newsletter-form-email" placeholder=" Email Address " class="placeholder hide-on-focus" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Your email address'">
-                                            <div class="form-icon">
-                                                <button type="submit" name="submit" id="newsletter-submit" class="email_icon newsletter-submit button-contactForm">
-                                                    Send
-                                                </button>
-                                            </div>
-                                            <div class="mt-10 info"></div>
-                                        </form>
-                                    </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-5">
+                        <div class="single-footer-caption mb-50">
+                            <div class="footer-tittle">
+                                <h4>About Us</h4>
+                                <div class="footer-pera">
+                                    <p class="info1">Lorem igpsum doldfor sit amet, adipiscing elit, sed do eiusmod tempor cergelit rgh. </p>
+                                    <p class="info1">Lorem ipsum dolor sit amet, adipiscing elit.</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="footer-bottom">
-                    <div class="row d-flex justify-content-between align-items-center">
-                        <div class="col-xl-9 col-lg-8">
-                            <div class="footer-copy-right">
-                                <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-  Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-  <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-8">
+                        <div class="single-footer-caption mb-50">
+                            <div class="footer-number mb-50">
+                                <h4><span>+564 </span>7885 3222</h4>
+                                <p>youremail@gmail.com</p>
                             </div>
-                        </div>
-                        <div class="col-xl-3 col-lg-4">
-                            <!-- Footer Social -->
-                            <div class="footer-social f-right">
-                                <a href="#" ><i class="fab fa-twitter"></i></a>
-                                <a href="https://www.facebook.com/sai4ull" ><i class="fab fa-facebook-f"></i></a>
-                                <a href="#" ><i class="fas fa-globe"></i></a>
-                                <a href="#" ><i class="fab fa-instagram"></i></a>
+                            <!-- Form -->
+                            <div class="footer-form">
+                                <div id="mc_embed_signup">
+                                    <form target="_blank" action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01" method="get" class="subscribe_form relative mail_part" novalidate="true">
+                                        <input type="email" name="EMAIL" id="newsletter-form-email" placeholder=" Email Address " class="placeholder hide-on-focus" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Your email address'">
+                                        <div class="form-icon">
+                                            <button type="submit" name="submit" id="newsletter-submit" class="email_icon newsletter-submit button-contactForm">
+                                                Send
+                                            </button>
+                                        </div>
+                                        <div class="mt-10 info"></div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="footer-bottom">
+                <div class="row d-flex justify-content-between align-items-center">
+                    <div class="col-xl-9 col-lg-8">
+                        <div class="footer-copy-right">
+                            <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4">
+                        <!-- Footer Social -->
+                        <div class="footer-social f-right">
+                            <a href="#" ><i class="fab fa-twitter"></i></a>
+                            <a href="https://www.facebook.com/sai4ull" ><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" ><i class="fas fa-globe"></i></a>
+                            <a href="#" ><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!-- Footer End-->
-    </footer>
-    <!-- Scroll Up -->
-    <div id="back-top" >
-        <a title="Go to Top" href="#" > <i class="fas fa-level-up-alt"></i></a>
     </div>
+    <!-- Footer End-->
+</footer>
+<!-- JS here -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-    <!-- JS here -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script src="{% static 'front_office/assets/js/vendor/modernizr-3.5.0.min.js' %}"></script>
+<!-- Jquery, Popper, Bootstrap -->
+<script src="{% static 'front_office/assets/js/vendor/jquery-1.12.4.min.js*' %}"></script>
+<script src="{% static 'front_office/assets/js/popper.min.js' %}"></script>
+<script src="{% static 'front_office/assets/js/bootstrap.min.js' %}"></script>
+<!-- Jquery Mobile Menu -->
+<script src="{% static 'front_office/assets/js/jquery.slicknav.min.js' %}"></script>
+
+<!-- Jquery Slick , Owl-Carousel Plugins -->
+<script src="{% static 'front_office/assets/js/owl.carousel.min.js' %}"></script>
+<script src="{% static 'front_office/assets/js/slick.min.js' %}"></script>
+<!-- One Page, Animated-HeadLin -->
+<script src="{% static 'front_office/assets/js/wow.min.js' %}"></script>
+<script src="{% static 'front_office/assets/js/animated.headline.js' %}"></script>
+<script src="{% static 'front_office/assets/js/jquery.magnific-popup.js' %}"></script>
+
+<!-- Date Picker -->
+<script src="{% static 'front_office/assets/js/gijgo.min.js' %}"></script>
+<!-- Nice-select, sticky -->
+<script src="{% static 'front_office/assets/js/jquery.nice-select.min.js' %}"></script>
+<script src="{% static 'front_office/assets/js/jquery.sticky.js' %}"></script>
+
+<!-- counter , waypoint -->
+<script src="{% static 'front_office/assets/js/jquery.counterup.min.js' %}"></script>
+<script src="{% static 'front_office/assets/js/waypoints.min.js' %}"></script>
+<script src="{% static 'front_office/assets/js/jquery.countdown.min.js' %}"></script>
+<!-- contact js -->
+<script src="{% static 'front_office/assets/js/contact.js' %}"></script>
+<script src="{% static 'front_office/assets/js/jquery.form.js' %}"></script>
+<script src="{% static 'front_office/assets/js/jquery.validate.min.js' %}"></script>
+<script src="{% static 'front_office/assets/js/mail-script.js' %}"></script>
+<script src="{% static 'front_office/assets/js/jquery.ajaxchimp.min.js' %}"></script>
+
+<!-- Jquery Plugins, main Jquery -->	
+<script src="{% static 'front_office/assets/js/plugins.js' %}"></script>
+<script src="{% static 'front_office/assets/js/main.js' %}"></script>
 
 
-    <script src="{% static 'front_office/assets/js/vendor/modernizr-3.5.0.min.js' %}"></script>
-    <!-- Jquery, Popper, Bootstrap -->
-    <script src="{% static 'front_office/assets/js/vendor/jquery-1.12.4.min.js*' %}"></script>
-    <script src="{% static 'front_office/assets/js/popper.min.js' %}"></script>
-    <script src="{% static 'front_office/assets/js/bootstrap.min.js' %}"></script>
-    <!-- Jquery Mobile Menu -->
-    <script src="{% static 'front_office/assets/js/jquery.slicknav.min.js' %}"></script>
+<script>
+    // Function to add a message to the chat log
+    function addMessageToChatLog(sender, message, isUser = true) {
+        const chatLog = document.getElementById('chat-log');
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', isUser ? 'user-message' : 'bot-message');
+        messageDiv.textContent = `${sender}: ${message}`;
+        chatLog.appendChild(messageDiv);
+        chatLog.scrollTop = chatLog.scrollHeight; // Auto-scroll to the bottom
+    }
 
-    <!-- Jquery Slick , Owl-Carousel Plugins -->
-    <script src="{% static 'front_office/assets/js/owl.carousel.min.js' %}"></script>
-    <script src="{% static 'front_office/assets/js/slick.min.js' %}"></script>
-    <!-- One Page, Animated-HeadLin -->
-    <script src="{% static 'front_office/assets/js/wow.min.js' %}"></script>
-    <script src="{% static 'front_office/assets/js/animated.headline.js' %}"></script>
-    <script src="{% static 'front_office/assets/js/jquery.magnific-popup.js' %}"></script>
+    // Function to simulate typing effect from the bot
+    function botTyping() {
+        const chatLog = document.getElementById('chat-log');
+        const typingIndicator = document.createElement('div');
+        typingIndicator.classList.add('typing');
+        chatLog.appendChild(typingIndicator);
+        chatLog.scrollTop = chatLog.scrollHeight; // Auto-scroll to the bottom
 
-    <!-- Date Picker -->
-    <script src="{% static 'front_office/assets/js/gijgo.min.js' %}"></script>
-    <!-- Nice-select, sticky -->
-    <script src="{% static 'front_office/assets/js/jquery.nice-select.min.js' %}"></script>
-    <script src="{% static 'front_office/assets/js/jquery.sticky.js' %}"></script>
-    
-    <!-- counter , waypoint -->
-    <script src="{% static 'front_office/assets/js/jquery.counterup.min.js' %}"></script>
-    <script src="{% static 'front_office/assets/js/waypoints.min.js' %}"></script>
-    <script src="{% static 'front_office/assets/js/jquery.countdown.min.js' %}"></script>
-    <!-- contact js -->
-    <script src="{% static 'front_office/assets/js/contact.js' %}"></script>
-    <script src="{% static 'front_office/assets/js/jquery.form.js' %}"></script>
-    <script src="{% static 'front_office/assets/js/jquery.validate.min.js' %}"></script>
-    <script src="{% static 'front_office/assets/js/mail-script.js' %}"></script>
-    <script src="{% static 'front_office/assets/js/jquery.ajaxchimp.min.js' %}"></script>
-    
-    <!-- Jquery Plugins, main Jquery -->	
-    <script src="{% static 'front_office/assets/js/plugins.js' %}"></script>
-    <script src="{% static 'front_office/assets/js/main.js' %}"></script>
-    
-    
+        return new Promise(resolve => {
+            setTimeout(() => {
+                chatLog.removeChild(typingIndicator); // Remove typing indicator
+                resolve();
+            }, 2000); // Typing duration (e.g., 2 seconds)
+        });
+    }
+
+    // Initial message from the chatbot
+    addMessageToChatLog('Bot', 'Hi there, how can I help you?', false);
+
+    document.getElementById('send-btn').addEventListener('click', function() {
+        const userMessage = document.getElementById('user-input').value;
+        if (userMessage.trim() === '') return; // Prevent sending empty messages
+
+        addMessageToChatLog('User', userMessage); // Display user message
+        document.getElementById('user-input').value = ''; // Clear input field
+
+        // Show typing indicator before bot responds
+        botTyping().then(() => {
+            fetch('{% url "chatbot_reply" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ message: userMessage })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                addMessageToChatLog('Bot', data.reply, false); // Display bot reply
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                addMessageToChatLog('Bot', 'An error occurred while processing your request. Please try again.', false);
+            });
+        });
+    });
+
+    // Show/hide chatbot window on icon click
+    document.getElementById('chat-icon').addEventListener('click', function() {
+        const chatbot = document.getElementById('chatbot');
+        chatbot.style.display = chatbot.style.display === 'flex' ? 'none' : 'flex'; // Toggle visibility
+    });
+</script>
 </body>
 </html>
