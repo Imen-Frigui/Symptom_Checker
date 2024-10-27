@@ -5,11 +5,16 @@ import json
 import google.generativeai as genai
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Medication, SideEffect, Treatment
-from .forms import MedicationForm, SideEffectForm, TreatmentForm
+from .models import Medication, SideEffect, Treatment , Feedback
+from .forms import MedicationForm, SideEffectForm, TreatmentForm , FeedbackForm
 from django.core.paginator import Paginator 
 from django.db.models import Q 
 from django.views.decorators.csrf import csrf_exempt
+from django.db import models
+from textblob import TextBlob  
+from django.views.decorators.http import require_POST
+
+
 
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 genai.configure(api_key=GOOGLE_API_KEY)
@@ -194,3 +199,58 @@ def run_analysis(request):
         side_effect.save()
     
     return redirect('side_effect_severity_chart') 
+
+
+def treatment_and_medication_list(request):
+    # Get the search query from the GET parameters
+    query = request.GET.get('q', '')
+
+    # Fetch all treatments and apply search filter
+    treatments = Treatment.objects.prefetch_related('medications__side_effects').all()
+    if query:
+        treatments = treatments.filter(
+            models.Q(name__icontains=query) |
+            models.Q(description__icontains=query) |
+            models.Q(medications__name__icontains=query) |
+            models.Q(medications__description__icontains=query) |
+            models.Q(medications__side_effects__description__icontains=query)
+        ).distinct()
+
+    # Paginate the treatments
+    paginator = Paginator(treatments, 3)  
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+
+  # Instantiate the Feedback form
+    feedback_form = FeedbackForm()
+
+    return render(request, 'medication/treatment_and_medication_list.html', {
+        'page_obj': page_obj,
+        'query': query,
+        'feedback_form': feedback_form,
+    })
+
+    
+def submit_feedback(request, pk):
+    treatment = get_object_or_404(Treatment, pk=pk)
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.treatment = treatment
+
+            # Calculate sentiment score using TextBlob
+            analysis = TextBlob(feedback.feedback_text)
+            feedback.sentiment_score = analysis.sentiment.polarity  # Range: -1 (negative) to 1 (positive)
+            
+            feedback.save()
+            
+            # Return the feedback text and sentiment score as JSON
+            return JsonResponse({
+                'feedback_text': feedback.feedback_text,
+                'sentiment_score': feedback.sentiment_score
+            })
+
+    # If the form is invalid, return an error response
+    return JsonResponse({'error': 'Invalid feedback'}, status=400)

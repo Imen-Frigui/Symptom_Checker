@@ -28,4 +28,13 @@ class Treatment(models.Model):
         return self.name
 
 
+
+class Feedback(models.Model):
+    treatment = models.ForeignKey(Treatment, related_name='feedback', on_delete=models.CASCADE)
+    feedback_text = models.TextField()
+    sentiment_score = models.FloatField(null=True, blank=True)  
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Feedback on {self.treatment.name} - Score: {self.sentiment_score}"
         

@@ -21,6 +21,8 @@ urlpatterns = [
     path('treatments/create/', views.treatment_create, name='treatment_create'),
     path('treatments/<int:pk>/update/', views.treatment_update, name='treatment_update'),
     path('treatments/<int:pk>/delete/', views.treatment_delete, name='treatment_delete'),
+    path('treatments-medications/', views.treatment_and_medication_list, name='treatment_and_medication_list'),
+    path('treatments/<int:pk>/submit-feedback/', views.submit_feedback, name='submit_feedback'), 
 
     path('generate-description/', views.generate_description_api, name='generate_description_api'),
     path('run-analysis/', views.run_analysis, name='run_analysis'),

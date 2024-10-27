@@ -2,6 +2,8 @@ from django import forms
 from .models import Medication
 from .models import SideEffect
 from .models import Treatment
+from .models import Feedback
+
 
 
 class MedicationForm(forms.ModelForm):
@@ -23,4 +25,13 @@ class TreatmentForm(forms.ModelForm):
         fields = ['name', 'description', 'medications']
 
 
-
+class FeedbackForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = ['feedback_text']
+        widgets = {
+            'feedback_text': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Share your feedback...'}),
+        }
+        labels = {
+            'feedback_text': '',
+        }
