@@ -59,6 +59,7 @@
                                         <li><a href="{% static 'index.html' %}">Home</a></li>
                                         <li><a href="{% static 'about.html' %}">About</a></li>
                                         <li><a href="{% static 'doctor.html' %}">Doctors</a></li>
+                                        <li><a href="{% url 'institution_list_front' %}">Institutions</a></li>
                                         <li><a href="{% static 'department.html' %}">Department</a></li>
                                         <li><a href="{% static 'blog.html' %}">Blog</a>
                                             <ul class="submenu">
@@ -173,6 +174,55 @@
         </div>
     </div>
     <!-- About  End-->
+
+    <div class="gallery-area section-padding30">
+        <div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="section-tittle text-center mb-100">
+                <span>Our Institutions</span>
+                <h2>Our HealthCare Institutions</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="team-area">
+        <div class="container ">
+            <!-- Section Title -->
+            <div class="row">
+                <!-- Loop through each institution -->
+                {% for institution in institutions %}
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12">  <!-- Adjusted column classes -->
+                    <div class="single-team mb-30">
+                        <div class="team-img">
+                            <img src="front_office/assets/img/gallery/team2.png" alt="">
+                        </div>
+                        <div class="team-caption">
+                            <h3>   <i class="fas fa-solid fa-hospital mb-4"></i><a href="#">{{ institution.name }}</a>  <div class="rating">
+                                {% for i in "12345" %}
+                                    <i class="fas fa-star {% if i|add:0 <= institution.rating %}text-warning{% else %}text-secondary{% endif %}"></i>
+                                {% endfor %}
+                            </div></h3>
+                            <span>{{ institution.email }}</span>
+                          
+                            <!-- Team social -->
+                            <div >
+                                <a href="{% url 'institution_detail_front' institution.pk %}" class="btn hero-btn" data-animation="fadeInLeft" data-delay="0.5s">Details <i class="ti-arrow-right"></i></a>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                <!-- End of single team -->
+            </div>
+    </div>
+    </div>
+    
+    
+
+
+
     <!--? department_area_start  -->
     <div class="department_area section-padding2">
         <div class="container">

@@ -37,13 +37,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'Institution',  # Add your app here
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -115,11 +118,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'  # Note the leading slash for proper URL formatting
+
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
-    BASE_DIR / "back_office/assets",
-    BASE_DIR / "front_office/assets",
+    BASE_DIR / "static",  # If you have a main static folder
+    BASE_DIR / "static/back_office/assets",  # Adjusting to the correct path
+    BASE_DIR / "static/front_office/assets",  # Adjusting to the correct path
 ]
 
 # Default primary key field type

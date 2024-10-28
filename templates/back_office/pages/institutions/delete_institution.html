@@ -1,0 +1,7 @@
+<h1>Delete Health Institution</h1>
+<p>Are you sure you want to delete {{ institution.name }}?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Delete</button>
+</form>
+<a href="{% url 'institution_list' %}">Cancel</a>
