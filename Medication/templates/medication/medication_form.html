@@ -1,7 +1,20 @@
 {% extends "base.html" %}
 {% block title %}{{ form.instance.pk|yesno:"Update Medication,Add Medication" }}{% endblock %}
 {% block content %}
-<div class="container mt-5">
+
+{% load static %}
+
+<style>
+  body {
+      background-image: url("{% static 'img/img5.jpg' %}");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+  }
+</style>
+
+<div class="container mt-5 justify-content-center">
     <h2 class="text-primary">{{ form.instance.pk|yesno:"Update Medication,Add Medication" }}</h2>
     <form method="post" enctype="multipart/form-data" class="bg-light p-4 border rounded">
         {% csrf_token %}
@@ -55,10 +68,10 @@
         </div>
 
         <!-- Action Buttons -->
-        <div class="mt-3">
-            <button type="submit" class="btn btn-primary">Save</button>
-            <a href="{% url 'medication_list' %}" class="btn btn-secondary">Cancel</a>
-        </div>
+        <div class="mt-3 d-flex justify-content-center">
+          <button type="submit" class="btn btn-primary btn-lg mx-2">Save</button>
+          <a href="{% url 'medication_list' %}" class="btn btn-secondary btn-lg mx-2">Cancel</a>
+      </div>
     </form>
 </div>
 <script>

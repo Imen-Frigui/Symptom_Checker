@@ -3,6 +3,19 @@
 {% block title %}Medication Details{% endblock %}
 
 {% block content %}
+
+{% load static %}
+
+
+<style>
+    body {
+        background-image: url("{% static 'img/img1.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+</style>
 <div class="container mt-5">
     <div class="card mx-auto" style="max-width: 600px;">
         <!-- Card Header with Image -->

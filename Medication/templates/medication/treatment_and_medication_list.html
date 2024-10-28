@@ -3,6 +3,17 @@
 {% block title %} Treatments and Medications {% endblock %}
 
 {% block content %}
+{% load static %}
+
+<style>
+    body {
+        background-image: url("{% static 'img/img4.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+  </style>
 <div class="container mt-5">
     <h2 class="text-primary">Treatments, Medications, and Side Effects</h2>
 

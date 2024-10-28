@@ -1,7 +1,21 @@
 {% extends "base.html" %}
 {% block title %}Side Effects List{% endblock %}
 {% block content %}
+{% load static %}
+
+<style>
+    body {
+        background-image: url("{% static 'img/img2.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+  </style>
 <div class="container mt-5">
+    <a href="http://127.0.0.1:8000/dashboard/" class="btn btn-info mb-3">
+        <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+    </a>
     <h2 class="text-primary">Manage Side Effects</h2>
 
     <a href="{% url 'side_effect_severity_chart' %}" class="btn btn-primary mb-3">
@@ -10,6 +24,7 @@
     <a href="{% url 'sideeffect_create' %}" class="btn btn-success mb-3">
         <i class="fas fa-plus"></i> Add New Side Effect
     </a>
+    
     <table class="table">
         <thead>
             <tr>

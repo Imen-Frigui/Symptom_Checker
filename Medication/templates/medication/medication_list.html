@@ -1,9 +1,25 @@
 {% extends "base.html" %}
 {% block title %}Medications List{% endblock %}
 {% block content %}
+{% load static %}
+
+
+<style>
+    body {
+        background-image: url("{% static 'img/img4.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+</style>
 <div class="container-xl mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
+        <a href="http://127.0.0.1:8000/dashboard/" class="btn btn-info">
+            <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+        </a>
         <h2 class="text-primary">Manage Medications</h2>
+      
         
         <!-- Search Form -->
         <form method="get" class="form-inline">
