@@ -1,0 +1,280 @@
+{% load static %}
+<!doctype html>
+<html class="no-js" lang="zxx">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>{% block title %} Medical HTML-5 Template {% endblock %}</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="manifest" href="{% static 'site.webmanifest' %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'front_office/assets/img/favicon.ico' %}">
+    
+	<!-- CSS here -->
+	<link rel="stylesheet" href="{% static 'front_office/assets/css/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="{% static 'front_office/assets/css/owl.carousel.min.css' %}">
+	<link rel="stylesheet" href="{% static 'front_office/assets/css/slicknav.css' %}">
+    <link rel="stylesheet" href="{% static 'front_office/assets/css/flaticon.css' %}">
+    <link rel="stylesheet" href="{% static 'front_office/assets/css/gijgo.css' %}">
+    <link rel="stylesheet" href="{% static 'front_office/assets/css/animate.min.css' %}">
+    <link rel="stylesheet" href="{% static 'front_office/assets/css/animated-headline.css' %}">
+	<link rel="stylesheet" href="{% static 'front_office/assets/css/magnific-popup.css' %}">
+	<link rel="stylesheet" href="{% static 'front_office/assets/css/fontawesome-all.min.css' %}">
+	<link rel="stylesheet" href="{% static 'front_office/assets/css/themify-icons.css' %}">
+	<link rel="stylesheet" href="{% static 'front_office/assets/css/slick.css' %}">
+	<link rel="stylesheet" href="{% static 'front_office/assets/css/nice-select.css' %}">
+	<link rel="stylesheet" href="{% static 'front_office/assets/css/style.css' %}">
+</head>
+<body>
+    <!-- ? Preloader Start -->
+    <div id="preloader-active">
+        <div class="preloader d-flex align-items-center justify-content-center">
+            <div class="preloader-inner position-relative">
+                <div class="preloader-circle"></div>
+                <div class="preloader-img pere-text">
+                    <img src="{% static 'front_office/assets/img/logo/loder.png' %}" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Preloader Start -->
+<header>
+    <!--? Header Start -->
+    <div class="header-area">
+        <div class="main-header header-sticky">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <!-- Logo -->
+                    <div class="col-xl-2 col-lg-2 col-md-1">
+                        <div class="logo">
+                            <a href="{% static 'index.html' %}"><img src="{% static 'front_office/assets/img/logo/logo.png' %}" alt=""></a>
+                        </div>
+                    </div>
+                    <div class="col-xl-10 col-lg-10 col-md-10">
+                        <div class="menu-main d-flex align-items-center justify-content-end">
+                            <!-- Main-menu -->
+                            <div class="main-menu f-right d-none d-lg-block">
+                                <nav>
+                                    <ul id="navigation">
+                                        <li><a href="{% static 'index.html' %}">Home</a></li>
+                                        <li><a href="{% static 'about.html' %}">About</a></li>
+                                        <li><a href="{% static 'doctor.html' %}">Doctors</a></li>
+                                        <li><a href="{% url 'institution_list_front' %}">Institutions</a></li>
+                                        <li><a href="{% static 'department.html' %}">Department</a></li>
+                                        <li><a href="{% static 'blog.html' %}">Blog</a>
+                                            <ul class="submenu">
+                                                <li><a href="{% static 'blog.html' %}">Blog</a></li>
+                                                <li><a href="{% static 'blog_details.html' %}">Blog Details</a></li>
+                                                <li><a href="{% static 'elements.html' %}">Element</a></li>
+                                            </ul>
+                                        </li>
+                                        <li><a href="{% static 'contact.html' %}">Contact</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <div class="header-right-btn f-right d-none d-lg-block ml-30">
+                                <a href="{% static '#' %}" class="btn header-btn">01654.066.456</a>
+                            </div>
+                        </div>
+                    </div>   
+                    <!-- Mobile Menu -->
+                    <div class="col-12">
+                        <div class="mobile_menu d-block d-lg-none"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header End -->
+</header>
+<main>
+
+
+    <div class="gallery-area section-padding30">
+        <div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="section-tittle text-center mb-100">
+                <span>Our Institutions</span>
+                <h2>Our HealthCare Institutions</h2>
+            </div>
+        </div>
+    </div>
+    <div class="department_area ">
+
+
+
+
+
+
+        <div class="card mx-3">
+            <div class="card-header pb-0 px-3">
+                <h6 class="mb-0">Institution Details</h6>
+            </div>
+            <div class="card-body pt-4 p-3">
+                <ul class="list-group">
+                    <li class="list-group-item border-0 d-flex p-4 mb-2 bg-gray-100 border-radius-lg">
+                        <div class="d-flex flex-column">
+                            <h6 class="mb-3 text-sm">{{ institution.name }} Institution</h6>
+                            <span class="mb-2 text-xs">Type: <span class="text-dark font-weight-bold ms-sm-2">{{ institution.institution_type }}</span></span>
+                            <span class="mb-2 text-xs">Email Address: <span class="text-dark ms-sm-2 font-weight-bold">{{ institution.email }}</span></span>
+                            <span class="mb-2 text-xs">Phone: <span class="text-dark ms-sm-2 font-weight-bold">{{ institution.phone_number }}</span></span>
+                            <span class="mb-2 text-xs">Location: <span class="text-dark ms-sm-2 font-weight-bold">{{ institution.location }}</span></span>
+                            <span class="mb-2 text-xs">Website: <span class="text-dark ms-sm-2 font-weight-bold">{{ institution.website }}</span></span>
+                            <span class="mb-2 text-xs">Operational Hours: <span class="text-dark ms-sm-2 font-weight-bold">{{ institution.operational_hours|default:"N/A" }}</span></span>
+                            <span class="mb-2 text-xs">Services Provided: <span class="text-dark ms-sm-2 font-weight-bold">{{ institution.services_provided|default:"N/A" }}</span></span>
+                            <span class="mb-2 text-xs">Insurance Accepted: <span class="text-dark ms-sm-2 font-weight-bold">{{ institution.insurance_accepted|default:"N/A" }}</span></span>
+                            <span class="mb-2 text-xs">Rating: <span class="text-dark ms-sm-2 font-weight-bold">   <div class="rating">
+                                {% for i in "12345" %}
+                                    <i class="fas fa-star {% if i|add:0 <= institution.rating %}text-warning{% else %}text-secondary{% endif %}"></i>
+                                {% endfor %}
+                            </div></span></span>
+                            <span class="mb-2 text-xs">Capacity: <span class="text-dark ms-sm-2 font-weight-bold">{{ institution.capacity|default:"N/A" }}</span></span>
+                            <span class="mb-2 text-xs">Latitude: <span class="text-dark ms-sm-2 font-weight-bold">{{ institution.latitude|default:"N/A" }}</span></span>
+                            <span class="mb-2 text-xs">Longitude: <span class="text-dark ms-sm-2 font-weight-bold">{{ institution.longitude|default:"N/A" }}</span></span>
+                            
+                            <!-- Action Links -->
+                            <div class="mt-3">
+                                <a href="{% url 'institution_list_front' %}" class="btn hero-btn" data-animation="fadeInLeft" data-delay="0.5s">Back </a>
+
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    
+        
+
+
+
+
+   
+    </div>
+    
+
+
+
+    </main>
+    <footer>
+        <!--? Footer Start-->
+        <div class="footer-area section-bg" data-background="front_office/assets/img/gallery/footer_bg.jpg">
+            <div class="container">
+                <div class="footer-top footer-padding">
+                    <div class="row d-flex justify-content-between">
+                        <div class="col-xl-3 col-lg-3 col-md-4 col-sm-8">
+                            <div class="single-footer-caption mb-50">
+                                <!-- logo -->
+                                <div class="footer-logo">
+                                    <a href="index.html" ><img src="front_office/assets/img/logo/logo2_footer.png"  alt=""></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-5">
+                            <div class="single-footer-caption mb-50">
+                                <div class="footer-tittle">
+                                    <h4>About Us</h4>
+                                    <div class="footer-pera">
+                                        <p class="info1">Lorem igpsum doldfor sit amet, adipiscing elit, sed do eiusmod tempor cergelit rgh. </p>
+                                        <p class="info1">Lorem ipsum dolor sit amet, adipiscing elit.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-8">
+                            <div class="single-footer-caption mb-50">
+                                <div class="footer-number mb-50">
+                                    <h4><span>+564 </span>7885 3222</h4>
+                                    <p>youremail@gmail.com</p>
+                                </div>
+                                <!-- Form -->
+                                <div class="footer-form">
+                                    <div id="mc_embed_signup">
+                                        <form target="_blank" action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01" method="get" class="subscribe_form relative mail_part" novalidate="true">
+                                            <input type="email" name="EMAIL" id="newsletter-form-email" placeholder=" Email Address " class="placeholder hide-on-focus" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Your email address'">
+                                            <div class="form-icon">
+                                                <button type="submit" name="submit" id="newsletter-submit" class="email_icon newsletter-submit button-contactForm">
+                                                    Send
+                                                </button>
+                                            </div>
+                                            <div class="mt-10 info"></div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <div class="row d-flex justify-content-between align-items-center">
+                        <div class="col-xl-9 col-lg-8">
+                            <div class="footer-copy-right">
+                                <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+  Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+  <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4">
+                            <!-- Footer Social -->
+                            <div class="footer-social f-right">
+                                <a href="#" ><i class="fab fa-twitter"></i></a>
+                                <a href="https://www.facebook.com/sai4ull" ><i class="fab fa-facebook-f"></i></a>
+                                <a href="#" ><i class="fas fa-globe"></i></a>
+                                <a href="#" ><i class="fab fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer End-->
+    </footer>
+    <!-- Scroll Up -->
+    <div id="back-top" >
+        <a title="Go to Top" href="#" > <i class="fas fa-level-up-alt"></i></a>
+    </div>
+
+    <!-- JS here -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+
+    <script src="{% static 'front_office/assets/js/vendor/modernizr-3.5.0.min.js' %}"></script>
+    <!-- Jquery, Popper, Bootstrap -->
+    <script src="{% static 'front_office/assets/js/vendor/jquery-1.12.4.min.js*' %}"></script>
+    <script src="{% static 'front_office/assets/js/popper.min.js' %}"></script>
+    <script src="{% static 'front_office/assets/js/bootstrap.min.js' %}"></script>
+    <!-- Jquery Mobile Menu -->
+    <script src="{% static 'front_office/assets/js/jquery.slicknav.min.js' %}"></script>
+
+    <!-- Jquery Slick , Owl-Carousel Plugins -->
+    <script src="{% static 'front_office/assets/js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'front_office/assets/js/slick.min.js' %}"></script>
+    <!-- One Page, Animated-HeadLin -->
+    <script src="{% static 'front_office/assets/js/wow.min.js' %}"></script>
+    <script src="{% static 'front_office/assets/js/animated.headline.js' %}"></script>
+    <script src="{% static 'front_office/assets/js/jquery.magnific-popup.js' %}"></script>
+
+    <!-- Date Picker -->
+    <script src="{% static 'front_office/assets/js/gijgo.min.js' %}"></script>
+    <!-- Nice-select, sticky -->
+    <script src="{% static 'front_office/assets/js/jquery.nice-select.min.js' %}"></script>
+    <script src="{% static 'front_office/assets/js/jquery.sticky.js' %}"></script>
+    
+    <!-- counter , waypoint -->
+    <script src="{% static 'front_office/assets/js/jquery.counterup.min.js' %}"></script>
+    <script src="{% static 'front_office/assets/js/waypoints.min.js' %}"></script>
+    <script src="{% static 'front_office/assets/js/jquery.countdown.min.js' %}"></script>
+    <!-- contact js -->
+    <script src="{% static 'front_office/assets/js/contact.js' %}"></script>
+    <script src="{% static 'front_office/assets/js/jquery.form.js' %}"></script>
+    <script src="{% static 'front_office/assets/js/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'front_office/assets/js/mail-script.js' %}"></script>
+    <script src="{% static 'front_office/assets/js/jquery.ajaxchimp.min.js' %}"></script>
+    
+    <!-- Jquery Plugins, main Jquery -->	
+    <script src="{% static 'front_office/assets/js/plugins.js' %}"></script>
+    <script src="{% static 'front_office/assets/js/main.js' %}"></script>
+    
+    
+</body>
+</html>

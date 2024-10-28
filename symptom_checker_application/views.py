@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from Institution.models import HealthCareInstitution  # Import your model
 
 # Create your views here.
 
@@ -16,4 +17,10 @@ def blog(request):
 
 def dashboard(request):
     return render(request, 'back_office/pages/dashboard.html')
+
+# Main index page
+def index(request):
+    institutions = HealthCareInstitution.objects.all()  # Fetch all institutions
+    return render(request, 'front_office/index.html', {'institutions': institutions})  # Pass institutions to the template
+  
 
