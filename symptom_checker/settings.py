@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+     'symptoms',
     'Medication',
     'Consultation',
     'Institution',  # Add your app here

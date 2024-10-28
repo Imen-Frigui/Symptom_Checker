@@ -1,11 +1,16 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from Institution.models import HealthCareInstitution  # Import your model
 
 # Create your views here.
 
+
+# def index(request):
+#     institutions = HealthCareInstitution.objects.all()  
+#     return redirect('diagnose', {'institutions': institutions})
 def index(request):
     institutions = HealthCareInstitution.objects.all()  
     return render(request, 'front_office/index.html', {'institutions': institutions})
+
 
 def about(request):
     return render(request, 'front_office/about.html')
@@ -18,6 +23,7 @@ def blog(request):
 
 def dashboard(request):
     return render(request, 'back_office/pages/dashboard.html')
+
 
 # Main index page
 # def index(request):

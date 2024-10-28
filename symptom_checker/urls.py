@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path, include
 from symptom_checker_application import views
 from django.conf import settings
 from django.conf.urls.static import static
@@ -14,6 +14,7 @@ urlpatterns = [
     path('contact/', views.contact, name='contact'),
     path('blog/', views.blog, name='blog'),
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('symptoms/', include('symptoms.urls')),
     path('medication/', include('Medication.urls')), 
     
     # Back office URLs
