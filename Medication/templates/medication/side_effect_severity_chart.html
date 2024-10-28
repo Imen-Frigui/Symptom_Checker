@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Side Effect Severity Analysis</h2>
+
+<!-- JSON script tag to safely pass Django data to JavaScript -->
+<script id="sideEffectsData" type="application/json">
+    {{ side_effects|safe }}
+</script>
+
+<canvas id="severityChart" width="400" height="200"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Parse JSON data from the script tag
+    const sideEffects = JSON.parse(document.getElementById('sideEffectsData').textContent);
+
+    // Separate the data by severity levels
+    const labels = sideEffects.map(effect => effect.description);
+
+    const data = {
+        labels: labels,
+        datasets: [
+            {
+                label: 'Mild Severity',
+                data: sideEffects.map(effect => effect.severity_label === "mild" ? effect.severity_score : null),
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            },
+            {
+                label: 'Moderate Severity',
+                data: sideEffects.map(effect => effect.severity_label === "moderate" ? effect.severity_score : null),
+                backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                borderColor: 'rgba(255, 206, 86, 1)',
+                borderWidth: 1
+            },
+            {
+                label: 'Severe Severity',
+                data: sideEffects.map(effect => effect.severity_label === "severe" ? effect.severity_score : null),
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }
+        ]
+    };
+
+    const config = {
+        type: 'bar',
+        data: data,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 1
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return `${tooltipItem.dataset.label}: ${tooltipItem.raw}`;
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    const severityChart = new Chart(
+        document.getElementById('severityChart'),
+        config
+    );
+</script>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Medication Details{% endblock %}
+
+{% block content %}
+
+{% load static %}
+
+
+<style>
+    body {
+        background-image: url("{% static 'img/img1.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+</style>
+<div class="container mt-5">
+    <div class="card mx-auto" style="max-width: 600px;">
+        <!-- Card Header with Image -->
+        {% if medication.image %}
+        <div class="card-header p-0 mx-3 mt-3 position-relative z-index-1 text-center">
+            <img src="{{ medication.image.url }}" alt="{{ medication.name }}" class="img-fluid border-radius-lg" style="max-width: 100%; height: auto;">
+        </div>
+        {% endif %}
+
+        <!-- Card Body with Details -->
+        <div class="card-body text-center">
+            <h2 class="card-title text-primary">{{ medication.name }}</h2>
+            <p class="card-description mb-4"><strong>Description:</strong> {{ medication.description }}</p>
+
+            <p class="card-description mb-4"><strong>Side Effects:</strong> 
+                {% if medication.side_effects.all %}
+                    {% for side_effect in medication.side_effects.all %}
+                        <span class="badge 
+                            {% if side_effect.description == 'Nausea' %} bg-danger
+                            {% elif side_effect.description == 'Headache' %} bg-warning
+                            {% elif side_effect.description == 'Dizziness' %} bg-info
+                            {% elif side_effect.description == 'Fatigue' %} bg-secondary
+                            {% elif side_effect.description == 'Diarrhea' %} bg-primary
+                            {% elif side_effect.description == 'Constipation' %} bg-dark
+                            {% else %} bg-success
+                            {% endif %} text-white">
+                            {{ side_effect.description }}
+                        </span>
+                    {% endfor %}
+                {% else %}
+                    <span>No side effects listed</span>
+                {% endif %}
+            </p>
+
+            <a href="{% url 'medication_list' %}" class="btn btn-primary mt-3">Back to Medications List</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

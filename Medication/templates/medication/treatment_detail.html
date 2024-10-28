@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Treatment Details{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card mx-auto" style="max-width: 600px;">
+        <div class="card-body text-center">
+            <a href="http://127.0.0.1:8000/dashboard/" class="btn btn-info mb-3">
+                <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+            </a>
+            <h2 class="card-title text-primary">{{ treatment.name }}</h2>
+            <p class="card-description mb-4"><strong>Description:</strong> {{ treatment.description }}</p>
+
+            <p class="card-description mb-4"><strong>Medications:</strong> 
+                {% if treatment.medications.all %}
+                    {% for medication in treatment.medications.all %}
+                        <span class="badge bg-success text-white">{{ medication.name }}</span>
+                    {% endfor %}
+                {% else %}
+                    <span>No medications listed</span>
+                {% endif %}
+            </p>
+
+            <a href="{% url 'treatment_list' %}" class="btn btn-primary mt-3">Back to Treatments List</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

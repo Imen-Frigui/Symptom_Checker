@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}{{ form.instance.pk|yesno:"Update Side Effect,Add Side Effect" }}{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-primary">{{ form.instance.pk|yesno:"Update Side Effect,Add Side Effect" }}</h2>
+    <form method="post" class="bg-light p-4 border rounded">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_description">Description</label>
+            {{ form.description }}
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="{% url 'sideeffect_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

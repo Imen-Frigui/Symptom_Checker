@@ -55,8 +55,6 @@
             <span class="nav-link-text ms-1">Dashboard</span>
           </a>
         </li>
-
-
         <li class="nav-item">
           <a class="nav-link " href="{% url 'institution_list' %}">
             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
@@ -74,6 +72,35 @@
             <span class="nav-link-text ms-1">Consultation</span>
           </a>
         </li>
+         <!-- Medications -->
+        <li class="nav-item">
+        <a class="nav-link" href="{% url 'medication_list' %}">
+          <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="ni ni-caps-small text-dark text-sm opacity-10"></i>
+          </div>
+          <span class="nav-link-text ms-1">Medications</span>
+      </a>
+    </li>
+      <!-- Side Effects -->
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'sideeffect_list' %}">
+      <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+          <i class="ni ni-bullet-list-67 text-dark text-sm opacity-10"></i>
+      </div>
+      <span class="nav-link-text ms-1">Side Effects</span>
+  </a>
+</li>
+
+<!-- Treatments -->
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'treatment_list' %}">
+      <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+          <i class="ni ni-ruler-pencil text-dark text-sm opacity-10"></i>
+      </div>
+      <span class="nav-link-text ms-1">Treatments</span>
+  </a>
+</li>
+
         <li class="nav-item">
           <a class="nav-link " href="../pages/tables.html">
             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">

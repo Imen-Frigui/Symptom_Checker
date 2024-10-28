@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% block title %}Medications List{% endblock %}
+{% block content %}
+{% load static %}
+
+
+<style>
+    body {
+        background-image: url("{% static 'img/img4.jpg' %}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+</style>
+<div class="container-xl mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a href="http://127.0.0.1:8000/dashboard/" class="btn btn-info">
+            <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+        </a>
+        <h2 class="text-primary">Manage Medications</h2>
+      
+        
+        <!-- Search Form -->
+        <form method="get" class="form-inline">
+            <div class="input-group">
+                <input type="text" name="search" value="{{ search_query }}" class="form-control" placeholder="Search Medications...">
+                <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
+            </div>
+        </form>
+
+        <a href="{% url 'medication_create' %}" class="btn btn-success ml-2">
+            <i class="fas fa-plus"></i> Add New Medication
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table align-items-center mb-0" style="min-width: 1200px;">
+                <thead>
+                    <tr>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Image</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Name</th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Description</th>
+                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Side Effects</th>
+                        <th class="text-secondary opacity-7">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for medication in page_obj %}
+                    <tr>
+                        <!-- Image -->
+                        <td class="text-center">
+                            {% if medication.image %}
+                                <img src="{{ medication.image.url }}" alt="{{ medication.name }}" class="avatar avatar-sm" style="width: 50px; height: 50px;">
+                            {% else %}
+                                <span class="text-secondary text-xs">No image available</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Name -->
+                        <td>
+                            <p class="text-xs font-weight-bold mb-0">{{ medication.name }}</p>
+                        </td>
+                        
+                        <!-- Description -->
+                        <td>
+                            <p class="text-xs text-secondary mb-0">{{ medication.description|truncatewords:10 }}</p>
+                        </td>
+
+                        <!-- Side Effects with Color-Coded Badges -->
+                        <td class="text-center">
+                            {% if medication.side_effects.all %}
+                                {% for side_effect in medication.side_effects.all %}
+                                    <span class="badge badge-sm 
+                                        {% if side_effect.description == 'Nausea' %} bg-danger
+                                        {% elif side_effect.description == 'Headache' %} bg-warning
+                                        {% elif side_effect.description == 'Dizziness' %} bg-info
+                                        {% elif side_effect.description == 'Fatigue' %} bg-secondary
+                                        {% elif side_effect.description == 'Diarrhea' %} bg-primary
+                                        {% elif side_effect.description == 'Constipation' %} bg-dark
+                                        {% else %} bg-success
+                                        {% endif %} text-white">
+                                        {{ side_effect.description }}
+                                    </span>
+                                {% endfor %}
+                            {% else %}
+                                <span class="text-secondary text-xs">No side effects listed</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Actions -->
+                        <td class="align-middle">
+                            <a href="{% url 'medication_detail' medication.pk %}" class="text-info font-weight-bold text-xs">View</a> |
+                            <a href="{% url 'medication_update' medication.pk %}" class="text-warning font-weight-bold text-xs">Edit</a> |
+                            <a href="{% url 'medication_delete' medication.pk %}" class="text-danger font-weight-bold text-xs" data-toggle="modal" data-target="#deleteModal{{ medication.pk }}">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination Controls -->
+    <nav aria-label="Page navigation" class="mt-3">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">Previous</a>
+                </li>
+            {% endif %}
+            <li class="page-item disabled">
+                <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            </li>
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}">Last</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+<!-- Delete Modal -->
+{% for medication in page_obj %}
+<div class="modal fade" id="deleteModal{{ medication.pk }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel">Delete Medication</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete <strong>{{ medication.name }}</strong>?
+            </div>
+            <div class="modal-footer">
+                <form method="post" action="{% url 'medication_delete' medication.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
