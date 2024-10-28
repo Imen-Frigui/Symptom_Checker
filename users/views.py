@@ -326,7 +326,7 @@ def facial_login(request):
 def preprocess_image(image_path):
     img = cv2.imread(image_path)
     img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    resized_img = cv2.resize(img_rgb, (224, 224))  # Resizing to 224x224 as an example
+    resized_img = cv2.resize(img_rgb, (224, 224)) 
     return resized_img
 
 

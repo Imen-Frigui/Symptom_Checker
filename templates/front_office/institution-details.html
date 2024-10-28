@@ -47,37 +47,30 @@
                     <!-- Logo -->
                     <div class="col-xl-2 col-lg-2 col-md-1">
                         <div class="logo">
-                            <a href="{% static 'index.html' %}"><img src="{% static 'front_office/assets/img/logo/logo.png' %}" alt=""></a>
+                            <a href="{% url 'index' %}"><img src="{% static 'front_office/assets/img/logo/logo.png' %}" alt=""></a>
                         </div>
                     </div>
                     <div class="col-xl-10 col-lg-10 col-md-10">
                         <div class="menu-main d-flex align-items-center justify-content-end">
-                            <!-- Main-menu -->
-                            <div class="main-menu f-right d-none d-lg-block">
-                                <nav>
-                                    <ul id="navigation">
-                                        <li><a href="{% static 'index.html' %}">Home</a></li>
-                                        <li><a href="{% static 'about.html' %}">About</a></li>
-                                        <li><a href="{% static 'doctor.html' %}">Doctors</a></li>
-                                        <li><a href="{% url 'institution_list_front' %}">Institutions</a></li>
-                                        <li><a href="{% static 'department.html' %}">Department</a></li>
-                                        <li><a href="{% static 'blog.html' %}">Blog</a>
-                                            <ul class="submenu">
-                                                <li><a href="{% static 'blog.html' %}">Blog</a></li>
-                                                <li><a href="{% static 'blog_details.html' %}">Blog Details</a></li>
-                                                <li><a href="{% static 'elements.html' %}">Element</a></li>
-                                            </ul>
-                                        </li>
-                                        <li><a href="{% static 'contact.html' %}">Contact</a></li>
-                                    </ul>
-                                </nav>
-                            </div>
-                            <div class="header-right-btn f-right d-none d-lg-block ml-30">
-                                <a href="{% static '#' %}" class="btn header-btn">01654.066.456</a>
-                            </div>
-                        </div>
-                    </div>   
-                    <!-- Mobile Menu -->
+                                                   <!-- Main-menu -->
+                                                   <div class="main-menu f-right d-none d-lg-block">
+                                                    <nav>
+                                                        <ul id="navigation">
+                                                            <li><a href="{% url 'index' %}">Home</a></li>
+                                                            <li><a href="{% url 'institution_list_front' %}">Institutions</a></li>
+                                                            <li><a href="{% url 'consultation_list' %}">Consultations</a>
+                                                            <li><a href="{% url 'treatment_and_medication_list' %}">Treatments & Medications</a></li>
+                                                            <li><a href="{% url 'diagnose' %}">Symptom Checker </a>
+                                                            </li>
+                                                        </ul>
+                                                    </nav>
+                                                </div>
+                                                <div class="header-right-btn f-right d-none d-lg-block ml-30">
+                                                    <a href="{% url 'login' %}" class="btn header-btn">Login</a>
+                                                </div>
+                                            </div>
+                                        </div> 
+                                <!-- Mobile Menu -->
                     <div class="col-12">
                         <div class="mobile_menu d-block d-lg-none"></div>
                     </div>

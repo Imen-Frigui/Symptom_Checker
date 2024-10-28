@@ -57,20 +57,11 @@
                                 <nav>
                                     <ul id="navigation">
                                         <li><a href="{% static 'index.html' %}">Home</a></li>
-                                        <li><a href="{% static 'about.html' %}">About</a></li>
-                                        <li><a href="{% static 'doctor.html' %}">Doctors</a></li>
                                         <li><a href="{% url 'institution_list_front' %}">Institutions</a></li>
-                                        <li><a href="{% static 'department.html' %}">Department</a></li>
                                         <li><a href="{% url 'consultation_list' %}">Consultations</a>
                                         <li><a href="{% url 'treatment_and_medication_list' %}">Treatments & Medications</a></li>
-                                        <li><a href="{% static 'blog.html' %}">Blog</a>
-                                            <ul class="submenu">
-                                                <li><a href="{% static 'blog.html' %}">Blog</a></li>
-                                                <li><a href="{% static 'blog_details.html' %}">Blog Details</a></li>
-                                                <li><a href="{% static 'elements.html' %}">Element</a></li>
-                                            </ul>
+                                        <li><a href="{% url 'diagnose' %}">Symptom Checker </a>
                                         </li>
-                                        <li><a href="{% static 'contact.html' %}">Contact</a></li>
                                     </ul>
                                 </nav>
                             </div>
@@ -103,8 +94,8 @@
                                 <h1 class="cd-headline letters scale">We care about your 
                                     <strong class="cd-words-wrapper">
                                         <b class="is-visible">health</b>
-                                        <b>sushi</b>
-                                        <b>steak</b>
+                                        <b>check</b>
+                                        <b>symptom</b>
                                     </strong>
                                 </h1>
                                 <p data-animation="fadeInLeft" data-delay="0.1s">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi uquip ex ea commodo consequat is aute irure.</p>

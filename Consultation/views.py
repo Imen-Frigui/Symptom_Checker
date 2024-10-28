@@ -4,7 +4,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Consultation
 from .forms import ConsultationForm
 import importlib 
+from django.contrib.auth.decorators import login_required
 
+
+@login_required
 def consultation_list(request):
     consultations = Consultation.objects.all()
     return render(request, 'consultation/consultation_list.html', {'consultations': consultations})
@@ -12,7 +15,7 @@ def consultation_list(request):
 # def consultation_detail(request, pk):
 #     consultation = get_object_or_404(Consultation, pk=pk)
 #     return render(request, 'consultation/consultation_detail.html', {'consultation': consultation})
-
+@login_required
 def consultation_detail(request, pk):
     consultation = get_object_or_404(Consultation, pk=pk)
     
@@ -26,7 +29,7 @@ def consultation_detail(request, pk):
         "summary": summary,
     })
 
-
+@login_required
 def consultation_create(request):
     if request.method == 'POST':
         form = ConsultationForm(request.POST)
@@ -36,7 +39,7 @@ def consultation_create(request):
     else:
         form = ConsultationForm()
     return render(request, 'consultation/consultation_form.html', {'form': form})
-
+@login_required
 def consultation_update(request, pk):
     consultation = get_object_or_404(Consultation, pk=pk)
     if request.method == 'POST':
@@ -47,6 +50,8 @@ def consultation_update(request, pk):
     else:
         form = ConsultationForm(instance=consultation)
     return render(request, 'consultation/consultation_form.html', {'form': form})
+
+@login_required
 
 def consultation_delete(request, pk):
     consultation = get_object_or_404(Consultation, pk=pk)
