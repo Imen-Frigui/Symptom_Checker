@@ -1,9 +1,8 @@
+# health_service.py
 import requests
-import hmac
 import hashlib
+import hmac
 import base64
-import os
-from decouple import config
 
 class PriaidHealthService:
     def __init__(self, api_key, secret_key, auth_url, language, health_service_url):
@@ -15,25 +14,36 @@ class PriaidHealthService:
         self.token = self.authenticate()
 
     def authenticate(self):
-        # Create HMACMD5 hash
-        uri = self.auth_url
-        hashed_credentials = self.generate_hmac_md5_hash(uri, self.secret_key)
-
-        headers = {
-            'Authorization': f'Bearer {self.api_key}:{hashed_credentials}'
-        }
-
-        response = requests.post(uri, headers=headers)
-        if response.status_code == 200:
-            return response.json()['Token']
-        else:
-            raise Exception("Authentication failed. Please check your credentials.")
-
-    def generate_hmac_md5_hash(self, uri, secret_key):
-        secret_bytes = bytes(secret_key, 'utf-8')
-        uri_bytes = bytes(uri, 'utf-8')
-        hmac_hash = hmac.new(secret_bytes, uri_bytes, hashlib.md5)
-        return base64.b64encode(hmac_hash.digest()).decode()
+        try:
+            # Construct the URL with format=json
+            uri = f"{self.auth_url}?format=json"
+            
+            # Create HMACMD5 hash of the URI using the secret key
+            secret_bytes = self.secret_key.encode('utf-8')
+            data_bytes = uri.encode('utf-8')
+            computed_hash = hmac.new(secret_bytes, data_bytes, hashlib.md5).digest()
+            computed_hash_string = base64.b64encode(computed_hash).decode('utf-8')
+            
+            # Create the Authorization header
+            authorization_header = f"Bearer {self.api_key}:{computed_hash_string}"
+            
+            # Make the POST request to get the access token
+            headers = {
+                "Authorization": authorization_header
+            }
+            
+            response = requests.post(uri, headers=headers)
+            
+            # Check if the response is successful
+            if response.status_code == 200:
+                token_info = response.json()
+                return token_info.get("Token")
+            else:
+                # If the response failed, raise an exception
+                raise Exception(f"Authentication failed. HTTP Status Code: {response.status_code}. Error: {response.json().get('message', 'Unknown error')}")
+        
+        except Exception as e:
+            raise Exception(f"Error during authentication: {e}")
 
     def get_symptoms(self):
         url = f"{self.health_service_url}/symptoms?token={self.token}&language={self.language}"
