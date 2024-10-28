@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Symptom Checker</title>
+
+    <!-- Bootstrap CSS (Include from CDN) -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .symptom-checker-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .form-heading {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #343a40;
+        }
+        .submit-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+        }
+        .submit-btn:hover {
+            background-color: #218838;
+        }
+        .diagnosis-result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container symptom-checker-container">
+        <h1 class="form-heading">Symptom Checker</h1>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn submit-btn w-100">Check Symptoms</button>
+        </form>
+
+        {% if result %}
+        <div class="diagnosis-result">
+            <h3>Diagnosis Suggestion:</h3>
+            <p>{{ result }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Bootstrap JS and dependencies (Optional for dynamic features) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

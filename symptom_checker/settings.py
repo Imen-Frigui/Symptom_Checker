@@ -9,9 +9,11 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+from decouple import config
 import os
 from dotenv import load_dotenv
 from pathlib import Path
+import os
 
 
 
@@ -42,6 +44,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'users',
+    'crispy_forms',
+    'crispy_bootstrap4',
      'symptoms',
     'Medication',
     'Consultation',
@@ -130,8 +135,8 @@ STATIC_URL = '/static/'  # Note the leading slash for proper URL formatting
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",  # If you have a main static folder
-    BASE_DIR / "static/back_office/assets",  # Adjusting to the correct path
-    BASE_DIR / "static/front_office/assets",  # Adjusting to the correct path
+    # BASE_DIR / "static/back_office/assets",  # Adjusting to the correct path
+    # BASE_DIR / "static/front_office/assets",  # Adjusting to the correct path
     BASE_DIR / "public",
 ]
 
@@ -144,3 +149,16 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Custom user model
+AUTH_USER_MODEL = 'users.CustomUser'
+
+LOGIN_REDIRECT_URL = '/dashboard/'
+LOGOUT_REDIRECT_URL = '/'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+API_KEY = config('HUGGINGFACE_API_KEY')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
